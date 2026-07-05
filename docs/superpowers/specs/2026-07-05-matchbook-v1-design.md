@@ -67,8 +67,11 @@ All ids are UUIDs. All secret slugs/tokens are cryptographically random and ungu
   slug/token: `get_profile(share_slug)`, `create_chat(share_slug)`,
   `get_chat(token)`, `send_message(token, body)`. Functions return only the
   minimum fields needed.
-- Photos live in a non-listable storage bucket; the profile function returns
-  short-lived signed URLs.
+- Photos live in a public-read, non-listable storage bucket under unguessable
+  UUID paths (same trust model as profile links: possession of the URL is the
+  credential). Uploads are RLS-restricted to the owner's folder.
+  *(Amended 2026-07-05 during planning: Supabase signed URLs cannot be minted
+  from SQL functions without an extra edge-function layer — YAGNI for v1.)*
 
 ## Flows
 

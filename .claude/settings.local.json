@@ -7,7 +7,8 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit -q -m 'Add Matchbook v1 design spec *)",
-      "Bash(git commit -q -m 'Spec self-review fixes: status-change chat locking, v1 domain *)"
+      "Bash(git commit -q -m 'Spec self-review fixes: status-change chat locking, v1 domain *)",
+      "Bash(git commit -q -m 'docs: Matchbook v1 implementation plan \\(15 tasks\\) + spec photo amendment *)"
     ]
   }
 }
