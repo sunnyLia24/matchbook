@@ -29,7 +29,8 @@ Same stack as Dear Date:
    - Edge functions / SQL functions: token-authenticated access for account-free
      web visitors, chat creation, message sending, STOP enforcement.
 3. **Web app — single-file vanilla JS pages on Netlify (Dear Date style).**
-   Two pages, mobile-first:
+   Hosted on the free Netlify subdomain for v1 (custom domain is a later, trivial
+   swap). Two pages, mobile-first:
    - **Profile page** (`/p/<share_slug>`): renders one friend's profile; "Say hi 👋"
      button creates a chat.
    - **Chat page** (`/c/<participant_token>`): the chat room. Same page for both
@@ -48,7 +49,8 @@ All ids are UUIDs. All secret slugs/tokens are cryptographically random and ungu
   `status` (`single` | `taken` | `hidden`), `consented` (boolean: "they know they're
   on here"), `share_slug` (unique, secret), timestamps.
   - Setting `status` to anything but `single` makes the profile page return
-    "profile unavailable" immediately.
+    "profile unavailable" immediately AND ends (locks) any active chats for that
+    friend, same as STOP.
 - **chats** — `id`, `friend_id → friends`, `status` (`active` | `ended`),
   `ended_by` (`guest` | `friend` | null), `guest_token` (secret), `friend_token`
   (secret), `created_at`, `ended_at`.
@@ -106,7 +108,7 @@ All ids are UUIDs. All secret slugs/tokens are cryptographically random and ungu
 - Bad/expired slug or token → friendly "This link isn't active" page, no detail
   leaked about whether it ever existed.
 - `hidden`/`taken` friend → profile and any active chat pages show unavailable/ended
-  states; hiding a friend also ends their active chats.
+  states (both statuses end active chats, per the data-model rule above).
 - Sends to an ended chat → rejected server-side, UI shows the ended state.
 - Message body validation: non-empty, ≤ 2000 chars, plain text only (rendered as
   text, never HTML).
