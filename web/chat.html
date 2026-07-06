@@ -121,7 +121,7 @@
   });
 
   $('end').addEventListener('click', async () => {
-    if (!confirm('Permanently end this chat? This can't be undone.')) return;
+    if (!confirm('Permanently end this chat? This can’t be undone.')) return;
     await sb.rpc('end_chat', { p_token: token });
     showEnded();
   });
