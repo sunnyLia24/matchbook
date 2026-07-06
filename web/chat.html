@@ -267,7 +267,7 @@
     }
     if (first) {
       channel = sb.channel('chat:' + c.broadcast_key)
-        .on('broadcast', { event: 'message' }, ({ payload }) => addMsg(payload))
+        .on('broadcast', { event: 'message' }, ({ payload }) => { if (payload.sender !== role) addMsg(payload); })
         .on('broadcast', { event: 'ended' }, showEnded)
         .subscribe();
     }
@@ -280,7 +280,7 @@
     $('box').value = '';
     const { data: r } = await sb.rpc('send_message', { p_token: token, p_body: body });
     if (!r?.ok) { if (r?.error === 'ended') showEnded(); return; }
-    // own broadcasts are not echoed back by default config — render locally
+    // own messages render locally; server broadcasts echo to everyone, so the handler skips own-sender payloads
     if (!r.ended) addMsg({ sender: role, body });
   });
 
