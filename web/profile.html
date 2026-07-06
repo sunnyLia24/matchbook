@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Matchbook</title>
+<style>
+  :root { --ink:#2b2018; --paper:#faf5ef; --accent:#c4553d; --soft:#eadfd3; }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:-apple-system,'Helvetica Neue',sans-serif; background:var(--paper);
+         color:var(--ink); min-height:100dvh; display:flex; justify-content:center; }
+  .card { width:100%; max-width:430px; padding:20px 20px 40px; }
+  .photos { display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x mandatory;
+            border-radius:20px; -webkit-overflow-scrolling:touch; }
+  .photos img { width:100%; flex:none; aspect-ratio:4/5; object-fit:cover;
+                border-radius:20px; scroll-snap-align:center; background:var(--soft); }
+  h1 { font-size:32px; margin-top:18px; }
+  h1 small { font-weight:400; color:#7a6a5b; font-size:22px; }
+  .city { color:#7a6a5b; margin-top:2px; }
+  .pitch { margin-top:14px; font-size:18px; line-height:1.45; }
+  .pitch::before { content:'"'; color:var(--accent); }
+  .pitch::after { content:'" — their wingperson'; color:#7a6a5b; font-size:14px; }
+  .prompt { background:#fff; border:1px solid var(--soft); border-radius:16px;
+            padding:14px 16px; margin-top:12px; }
+  .prompt .q { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#7a6a5b; }
+  .prompt .a { margin-top:4px; font-size:17px; }
+  .looking { margin-top:14px; color:#7a6a5b; font-size:15px; }
+  button { width:100%; margin-top:26px; padding:16px; font-size:18px; font-weight:600;
+           border:0; border-radius:16px; background:var(--accent); color:#fff; }
+  button:disabled { opacity:.5; }
+  .state { text-align:center; padding:34dvh 30px 0; color:#7a6a5b; font-size:17px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="card hidden" id="card">
+  <div class="photos" id="photos"></div>
+  <h1><span id="name"></span> <small id="age"></small></h1>
+  <div class="city" id="city"></div>
+  <div class="pitch" id="pitch"></div>
+  <div id="prompts"></div>
+  <div class="looking" id="looking"></div>
+  <button id="sayhi">Say hi 👋</button>
+</div>
+<div class="state hidden" id="state"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script>
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const $ = (id) => document.getElementById(id);
+  const slug = location.pathname.split('/')[2] || '';
+  const showState = (msg) => { $('state').textContent = msg; $('state').classList.remove('hidden'); };
+
+  async function load() {
+    const { data: p, error } = await sb.rpc('get_profile', { p_slug: slug });
+    if (error) return showState('Something went wrong — try again in a minute.');
+    if (!p) return showState("This link isn't active.");
+    document.title = p.first_name + ' · Matchbook';
+    for (const url of (p.photos || [])) {
+      const img = document.createElement('img'); img.src = url; $('photos').appendChild(img);
+    }
+    $('name').textContent = p.first_name;
+    $('age').textContent = p.age ? p.age : '';
+    $('city').textContent = p.city || '';
+    $('pitch').textContent = p.pitch || '';
+    for (const pr of (p.prompts || [])) {
+      const d = document.createElement('div'); d.className = 'prompt';
+      const q = document.createElement('div'); q.className = 'q'; q.textContent = pr.q;
+      const a = document.createElement('div'); a.className = 'a'; a.textContent = pr.a;
+      d.append(q, a); $('prompts').appendChild(d);
+    }
+    if (p.looking_for) $('looking').textContent = 'Looking for: ' + p.looking_for;
+    $('card').classList.remove('hidden');
+  }
+
+  $('sayhi').addEventListener('click', async () => {
+    $('sayhi').disabled = true; $('sayhi').textContent = 'Opening chat…';
+    const { data, error } = await sb.rpc('create_chat', { p_slug: slug });
+    if (error || !data) { $('sayhi').disabled = false; $('sayhi').textContent = 'Say hi 👋'; return; }
+    location.href = '/c/' + data.guest_token;
+  });
+
+  load();
+</script>
+</body>
+</html>
