@@ -3,6 +3,7 @@ import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { Friend } from '../../src/types';
+import { colors, radii, spacing, buttonBase, cardBase } from '../../src/theme';
 
 export default function Roster() {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -21,7 +22,7 @@ export default function Roster() {
         contentContainerStyle={{ padding: 16, gap: 12 }}
         ListEmptyComponent={<Text style={s.empty}>Add your first single friend 💘</Text>}
         renderItem={({ item }) => (
-          <Pressable style={s.row} onPress={() => router.push(`/friend/${item.id}`)}>
+          <Pressable style={({ pressed }) => [s.row, pressed && s.rowPressed]} onPress={() => router.push(`/friend/${item.id}`)}>
             {item.photos[0]
               ? <Image source={{ uri: item.photos[0] }} style={s.avatar} />
               : <View style={[s.avatar, s.avatarEmpty]}><Text style={{ fontSize: 22 }}>💘</Text></View>}
@@ -36,31 +37,33 @@ export default function Roster() {
         )}
       />
       {friends.length > 0 && (
-        <Pressable style={s.deckBtn} onPress={() => router.push('/deck')}>
+        <Pressable style={({ pressed }) => [s.deckBtn, pressed && s.deckBtnPressed]} onPress={() => router.push('/deck')}>
           <Text style={s.deckText}>🎉 Party mode</Text>
         </Pressable>
       )}
-      <Pressable style={s.add} onPress={() => router.push('/friend/new')}>
-        <Text style={{ color: '#fff', fontSize: 30, lineHeight: 32 }}>+</Text>
+      <Pressable style={({ pressed }) => [s.add, pressed && s.addPressed]} onPress={() => router.push('/friend/new')}>
+        <Text style={{ color: colors.white, fontSize: 30, lineHeight: 32 }}>+</Text>
       </Pressable>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  wrap: { flex: 1, backgroundColor: '#faf5ef' },
-  empty: { textAlign: 'center', color: '#7a6a5b', marginTop: 60, fontSize: 16 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#fff',
-         borderRadius: 16, padding: 12, borderWidth: 1, borderColor: '#eadfd3' },
+  wrap: { flex: 1, backgroundColor: colors.bg },
+  empty: { textAlign: 'center', color: colors.muted, marginTop: 60, fontSize: 16 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, ...cardBase, padding: spacing.md },
+  rowPressed: { backgroundColor: colors.bg },
   avatar: { width: 54, height: 54, borderRadius: 27 },
-  avatarEmpty: { backgroundColor: '#eadfd3', alignItems: 'center', justifyContent: 'center' },
-  name: { fontSize: 17, fontWeight: '600', color: '#2b2018' },
-  pitch: { color: '#7a6a5b', marginTop: 2 },
-  badge: { fontSize: 12, color: '#2e7d32', fontWeight: '600', textTransform: 'uppercase' },
-  badgeOff: { color: '#a4937f' },
-  deckBtn: { position: 'absolute', bottom: 24, alignSelf: 'center', backgroundColor: '#2b2018',
-             borderRadius: 26, paddingVertical: 14, paddingHorizontal: 26 },
-  deckText: { color: '#fff', fontSize: 17, fontWeight: '600' },
+  avatarEmpty: { backgroundColor: colors.line, alignItems: 'center', justifyContent: 'center' },
+  name: { fontSize: 17, fontWeight: '800', letterSpacing: -0.2, color: colors.ink },
+  pitch: { color: colors.muted, marginTop: 2 },
+  badge: { fontSize: 12, color: colors.brand, fontWeight: '600', textTransform: 'lowercase' },
+  badgeOff: { color: colors.muted },
+  deckBtn: { ...buttonBase, position: 'absolute', bottom: 24, alignSelf: 'center', minHeight: 0,
+             backgroundColor: colors.night, paddingVertical: 14, paddingHorizontal: 26, borderRadius: radii.pill },
+  deckBtnPressed: { opacity: 0.85 },
+  deckText: { color: colors.white, fontSize: 17, fontWeight: '600' },
   add: { position: 'absolute', right: 20, bottom: 24, width: 52, height: 52, borderRadius: 26,
-         backgroundColor: '#c4553d', alignItems: 'center', justifyContent: 'center' },
+         backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' },
+  addPressed: { backgroundColor: colors.brandDeep },
 });
