@@ -20,7 +20,7 @@
 - Setting a friend's status to anything but `single` ends all their active chats (DB trigger).
 - Monorepo layout: `backend/` (migrations, tests), `web/` (Netlify site), `app/` (Expo). Commit after every task.
 - The Supabase anon key is public by design (same as Dear Date); the service role key must never appear in any file in this repo.
-- Node test scripts are the backend test suite: run with `node backend/tests/<file>.mjs`; they exit 0 on pass, non-zero with an assertion error on fail.
+- Node test scripts are the backend test suite: run with `node --experimental-websocket backend/tests/<file>.mjs` (local Node is 20.x, whose supabase-js needs the WebSocket flag); they exit 0 on pass, non-zero with an assertion error on fail.
 
 ---
 
