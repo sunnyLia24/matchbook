@@ -126,7 +126,7 @@ const rand = () => Math.random().toString(36).slice(2, 10);
 
 async function signUp() {
   const c = anon();
-  const email = `test-${rand()}@matchbook-test.dev`;
+  const email = `test-${rand()}@matchbook-test.com`;
   const { data, error } = await c.auth.signUp({ email, password: 'test-pass-123!' });
   assert(!error, `signup failed: ${error?.message}`);
   assert(data.session, 'no session — is Confirm email disabled?');
@@ -305,7 +305,7 @@ const anon = () => createClient(cfg.url, cfg.anonKey, { auth: { persistSession: 
 const rand = () => Math.random().toString(36).slice(2, 10);
 
 const owner = anon();
-await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.dev`, password: 'test-pass-123!' });
+await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.com`, password: 'test-pass-123!' });
 const mk = async (over = {}) => (await owner.from('friends').insert({
   first_name: 'Jenny', age: 29, pitch: 'Great taste in people', consented: true,
   prompts: [{ q: 'Ideal Sunday', a: 'Dim sum then a long walk' }], ...over,
@@ -420,7 +420,7 @@ const anon = () => createClient(cfg.url, cfg.anonKey, { auth: { persistSession: 
 const rand = () => Math.random().toString(36).slice(2, 10);
 
 const owner = anon();
-const ownerEmail = `test-${rand()}@matchbook-test.dev`;
+const ownerEmail = `test-${rand()}@matchbook-test.com`;
 await owner.auth.signUp({ email: ownerEmail, password: 'test-pass-123!' });
 const newChat = async () => {
   const { data: f } = await owner.from('friends')
@@ -627,7 +627,7 @@ const rand = () => Math.random().toString(36).slice(2, 10);
 const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='), c => c.charCodeAt(0));
 
 const owner = anon();
-const { data: su } = await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.dev`, password: 'test-pass-123!' });
+const { data: su } = await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.com`, password: 'test-pass-123!' });
 const uid = su.user.id;
 
 // owner can upload into own folder
@@ -860,7 +860,7 @@ import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'fs';
 const cfg = JSON.parse(readFileSync(new URL('../config.json', import.meta.url)));
 const c = createClient(cfg.url, cfg.anonKey, { auth: { persistSession: false } });
-await c.auth.signUp({ email: `demo-${Math.random().toString(36).slice(2,8)}@matchbook-test.dev`, password: 'test-pass-123!' });
+await c.auth.signUp({ email: `demo-${Math.random().toString(36).slice(2,8)}@matchbook-test.com`, password: 'test-pass-123!' });
 const { data: f } = await c.from('friends').insert({
   first_name: 'Jenny', age: 29, city: 'Brooklyn', pitch: 'My funniest friend, dangerously good at karaoke',
   prompts: [{ q: 'Ideal Sunday', a: 'Dim sum then a long walk with no destination' }],
