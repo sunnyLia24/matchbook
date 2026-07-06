@@ -32,7 +32,7 @@ assert(g.messages.length === 2 && g.messages[0].sender === 'guest', 'history wro
 assert((await t.v.rpc('get_chat', { p_token: 'bogus' })).data === null, 'bad token must be null');
 
 // STOP in all normalizations, from either side; never stored; permanently locks
-for (const stop of ['STOP', 'stop', '  Stop  ']) {
+for (const stop of ['STOP', 'stop', '  Stop  ', 'stop\n', '\tSTOP ']) {
   const s = await newChat();
   await s.v.rpc('send_message', { p_token: s.guest, p_body: 'hello' });
   const sr = (await s.v.rpc('send_message', { p_token: stop === 'stop' ? s.friend : s.guest, p_body: stop })).data;
@@ -48,6 +48,7 @@ t = await newChat();
 r = (await t.v.rpc('send_message', { p_token: t.guest, p_body: 'stop it' })).data;
 assert(r.ok && !r.ended, '"stop it" wrongly ended chat');
 assert(!(await t.v.rpc('send_message', { p_token: t.guest, p_body: '   ' })).data.ok, 'blank accepted');
+assert(!(await t.v.rpc('send_message', { p_token: t.guest, p_body: '\n\n' })).data.ok, 'whitespace-only (newlines) accepted');
 assert(!(await t.v.rpc('send_message', { p_token: t.guest, p_body: 'x'.repeat(2001) })).data.ok, 'oversize accepted');
 
 // end_chat button path

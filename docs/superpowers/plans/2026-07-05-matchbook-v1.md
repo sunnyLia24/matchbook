@@ -12,7 +12,7 @@
 
 - Spec: `docs/superpowers/specs/2026-07-05-matchbook-v1-design.md` — read it before starting any task.
 - All secret slugs/tokens: ≥128 bits, base64url, generated server-side by `matchbook_token()` (Task 3).
-- STOP normalization is exactly: `upper(btrim(body)) = 'STOP'`; the STOP message is never stored or delivered; ended chats permanently reject sends — enforced in SQL, never only in UI.
+- STOP normalization is exactly: `upper(btrim(body, E' \\t\\r\\n')) = 'STOP'` (all whitespace); the STOP message is never stored or delivered; ended chats permanently reject sends — enforced in SQL, never only in UI.
 - Anonymous web visitors NEVER select tables directly; only `get_profile`, `create_chat`, `get_chat`, `send_message`, `end_chat` RPCs.
 - Wingpeople can never read `messages` (no grants). The app fetches only chat metadata columns.
 - Message bodies: non-empty after trim, ≤ 2000 chars, always rendered as text (`textContent`, never `innerHTML`).
