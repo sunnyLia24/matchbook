@@ -20,6 +20,7 @@
 - Setting a friend's status to anything but `single` ends all their active chats (DB trigger).
 - Monorepo layout: `backend/` (migrations, tests), `web/` (Netlify site), `app/` (Expo). Commit after every task.
 - The Supabase anon key is public by design (same as Dear Date); the service role key must never appear in any file in this repo.
+- The app scaffolded on Expo SDK 57 (accepted deviation from the original SDK 54 target; same architecture). Tasks 11–14: before using an SDK-sensitive API from this plan's code (expo-file-system `legacy` import, expo-image-picker `mediaTypes`, expo-notifications tokens), verify it exists in the installed SDK and adapt minimally if the API moved — the behavior contract in each task is what's binding, not the exact import path.
 - Node test scripts are the backend test suite: run with `node --experimental-websocket backend/tests/<file>.mjs` (local Node is 20.x, whose supabase-js needs the WebSocket flag); they exit 0 on pass, non-zero with an assertion error on fail.
 
 ---
