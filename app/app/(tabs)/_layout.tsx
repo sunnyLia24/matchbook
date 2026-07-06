@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { registerPush } from '../../src/lib/push';
 
 export default function TabsLayout() {
+  useEffect(() => { registerPush(); }, []);
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: '#c4553d', headerShown: true,
       headerStyle: { backgroundColor: '#faf5ef' }, headerShadowVisible: false }}>
