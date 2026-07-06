@@ -9,3 +9,5 @@ participant can type STOP to permanently end the chat.
 - `app/` — Expo iOS app for wingpeople (TestFlight)
 
 Spec: docs/superpowers/specs/2026-07-05-matchbook-v1-design.md
+
+Live web: https://matchbook-party.netlify.app
