@@ -8,7 +8,14 @@
       "Bash(git add *)",
       "Bash(git commit -q -m 'Add Matchbook v1 design spec *)",
       "Bash(git commit -q -m 'Spec self-review fixes: status-change chat locking, v1 domain *)",
-      "Bash(git commit -q -m 'docs: Matchbook v1 implementation plan \\(15 tasks\\) + spec photo amendment *)"
+      "Bash(git commit -q -m 'docs: Matchbook v1 implementation plan \\(15 tasks\\) + spec photo amendment *)",
+      "Bash(git checkout *)",
+      "Bash(echo \".superpowers/\")",
+      "Bash(/Users/lia/.claude/plugins/cache/superpowers-marketplace/superpowers/6.1.0/skills/subagent-driven-development/scripts/task-brief docs/superpowers/plans/2026-07-05-matchbook-v1.md 1)",
+      "mcp__66941f26-81a6-491a-a85f-76e9e53c87d6__list_organizations",
+      "Bash(git commit -q -m 'docs: friend-side chat intro gate — named wingperson vouch, enter/decline *)",
+      "mcp__66941f26-81a6-491a-a85f-76e9e53c87d6__list_projects",
+      "Bash(npm install *)"
     ]
   }
 }
