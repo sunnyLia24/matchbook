@@ -1,14 +1,16 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
+    "name": "Matchbook",
+    "slug": "matchbook",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "app",
+    "scheme": "matchbook",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "club.deardate.matchbook",
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
@@ -37,6 +39,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0ffddaae-c60f-4dd9-8466-b4e599b5b0a5"
+      }
+    },
+    "owner": "sunnylia24"
   }
 }
