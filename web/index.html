@@ -1,8 +1,77 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
 <title>Matchbook</title>
-<style>body{font-family:-apple-system,sans-serif;background:#faf5ef;color:#2b2018;
-display:grid;place-items:center;min-height:100dvh;text-align:center;padding:30px}
-h1{font-size:40px}p{color:#7a6a5b;margin-top:10px}</style></head>
-<body><div><h1>Matchbook 🔥</h1><p>Profiles here are shared by invitation only.</p></div></body></html>
+<style>
+  :root {
+    --brand: oklch(0.58 0.22 355);
+    --brand-deep: oklch(0.42 0.19 355);
+    --night: oklch(0.22 0.03 355);
+    --night-ink: oklch(0.96 0.01 355);
+    --night-muted: oklch(0.72 0.03 355);
+    --champagne: oklch(0.80 0.10 85);
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+    background: var(--night);
+    color: var(--night-ink);
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    text-align: center;
+    padding: 30px;
+  }
+  .wrap {
+    max-width: 430px;
+    opacity: 0;
+    animation: fade-up 380ms var(--ease-out-quart) both;
+  }
+  .mark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--champagne);
+  }
+  h1 {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin-top: 14px;
+  }
+  h1 span { color: var(--brand); }
+  p {
+    color: var(--night-muted);
+    margin-top: 14px;
+    font-size: 17px;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wrap { animation: fade-in 1ms linear both; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mark">Matchbook</div>
+  <h1>Your single friends deserve better <span>PR</span>.</h1>
+  <p>Profiles here are shared by invitation only — ask your wingperson for the link.</p>
+</div>
+</body>
+</html>
