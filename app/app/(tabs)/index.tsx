@@ -32,8 +32,7 @@ export default function Roster() {
     <View style={s.wrap}>
       {needsName && (
         <View style={s.nameCard}>
-          {/* eslint-disable-next-line react/no-unescaped-entities */}
-          <Text style={s.nameCardText}>What's your name? Your friends' matches see it on chat invites.</Text>
+          <Text style={s.nameCardText}>{"What's your name? Your friends' matches see it on chat invites."}</Text>
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
             <TextInput style={s.nameInput} placeholder="Your name" placeholderTextColor={colors.muted}
               value={nameDraft} onChangeText={setNameDraft} />
