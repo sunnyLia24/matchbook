@@ -23,7 +23,7 @@ export default function FriendEditor() {
   useEffect(() => {
     if (!isNew) supabase.from('friends').select('*').eq('id', id).single()
       .then(({ data }) => data && setF(data as Friend));
-  }, [id]);
+  }, [id, isNew]);
 
   const set = (patch: Partial<Friend>) => setF((p) => ({ ...p, ...patch }));
 
@@ -94,7 +94,7 @@ export default function FriendEditor() {
       <TextInput style={s.input} placeholder="Looking for…" placeholderTextColor={colors.muted} value={f.looking_for ?? ''}
         onChangeText={(t) => set({ looking_for: t })} />
       <View style={s.rowBetween}>
-        <Text style={s.label}>They know they're on here</Text>
+        <Text style={s.label}>They know they’re on here</Text>
         <Switch value={!!f.consented} onValueChange={(v) => set({ consented: v })}
           trackColor={{ true: colors.brand, false: colors.line }} thumbColor={colors.white} />
       </View>

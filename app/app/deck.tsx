@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { supabase } from '../src/lib/supabase';
 import { WEB_BASE_URL } from '../src/lib/config';
 import { Friend } from '../src/types';
-import { colors, radii, spacing, buttonBase } from '../src/theme';
+import { colors, radii, buttonBase } from '../src/theme';
 
 const { width: W } = Dimensions.get('window');
 
@@ -36,7 +36,7 @@ export default function Deck() {
             {!!item.city && <Text style={s.city}>{item.city}</Text>}
             {!!item.pitch && (
               <View style={s.pitchWrap}>
-                <Text style={s.quoteMark}>"</Text>
+                <Text style={s.quoteMark}>“</Text>
                 <Text style={s.pitch}>{item.pitch}</Text>
               </View>
             )}
@@ -46,7 +46,7 @@ export default function Deck() {
               </View>
             ))}
             <Pressable style={({ pressed }) => [s.share, pressed && s.sharePressed]} onPress={() => share(item)}>
-              <Text style={s.shareText}>Share {item.first_name}'s profile</Text>
+              <Text style={s.shareText}>Share {item.first_name}’s profile</Text>
             </Pressable>
           </View>
         )}

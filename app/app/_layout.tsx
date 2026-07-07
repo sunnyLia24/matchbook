@@ -20,7 +20,7 @@ export default function RootLayout() {
     const inAuth = segments[0] === '(auth)';
     if (!session && !inAuth) router.replace('/(auth)/sign-in');
     if (session && inAuth) router.replace('/(tabs)');
-  }, [ready, session, segments]);
+  }, [ready, session, segments, router]);
 
   if (!ready) return null;
   return (
