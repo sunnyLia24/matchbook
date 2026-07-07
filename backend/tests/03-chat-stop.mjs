@@ -8,7 +8,8 @@ const rand = () => Math.random().toString(36).slice(2, 10);
 
 const owner = anon();
 const ownerEmail = `test-${rand()}@matchbook-test.com`;
-await owner.auth.signUp({ email: ownerEmail, password: 'test-pass-123!' });
+const { data: ownerSignUp } = await owner.auth.signUp({ email: ownerEmail, password: 'test-pass-123!' });
+await owner.from('wingpeople').update({ display_name: 'Test Wing' }).eq('id', ownerSignUp.user.id);
 const newChat = async () => {
   const { data: f } = await owner.from('friends')
     .insert({ first_name: 'Jenny', consented: true }).select().single();
@@ -27,7 +28,7 @@ r = (await t.v.rpc('send_message', { p_token: t.friend, p_body: 'hey! who is thi
 assert(r.ok, 'friend send failed');
 let g = (await t.v.rpc('get_chat', { p_token: t.friend })).data;
 assert(g.role === 'friend' && g.friend_name === 'Jenny' && g.broadcast_key.length >= 22, 'get_chat shape wrong');
-assert(g.wingperson_name === ownerEmail.split('@')[0], 'wingperson_name missing/wrong (signup trigger defaults display_name to email prefix)');
+assert(g.wingperson_name === 'Test Wing', 'wingperson_name missing/wrong');
 assert(g.messages.length === 2 && g.messages[0].sender === 'guest', 'history wrong');
 assert((await t.v.rpc('get_chat', { p_token: 'bogus' })).data === null, 'bad token must be null');
 

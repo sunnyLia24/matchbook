@@ -17,7 +17,7 @@ export default function SignIn() {
   }, []);
 
   const go = async () => {
-    if (mode === 'up' && !name.trim()) return Alert.alert('Hmm', 'Add your name — your friends\' matches see it on chat invites.');
+    if (mode === 'up' && !name.trim()) return Alert.alert('Hmm', 'Add your name — your friends’ matches see it on chat invites.');
     setBusy(true);
     const { data, error } = mode === 'in'
       ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
@@ -39,7 +39,7 @@ export default function SignIn() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      if (!credential.identityToken) throw new Error('Apple didn\'t return a sign-in token. Try again.');
+      if (!credential.identityToken) throw new Error('Apple didn’t return a sign-in token. Try again.');
       setBusy(true);
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'apple',

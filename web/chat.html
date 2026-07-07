@@ -262,7 +262,7 @@
     // friend-side intro gate: this is a vouched recommendation, entering is a choice
     const entered = sessionStorage.getItem('entered:' + token);
     if (c.role === 'friend' && !entered && !c.messages.some((m) => m.sender === 'friend')) {
-      $('inviteTitle').textContent = c.wingperson_name + ' vouches for this';
+      $('inviteTitle').textContent = (c.wingperson_name || 'Your friend') + ' vouches for this';
       $('invite').classList.remove('hidden');
     }
     if (first) {
