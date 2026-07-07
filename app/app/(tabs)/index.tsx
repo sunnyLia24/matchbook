@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { Friend } from '../../src/types';
@@ -7,15 +7,42 @@ import { colors, radii, spacing, buttonBase, cardBase } from '../../src/theme';
 
 export default function Roster() {
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [needsName, setNeedsName] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
   const router = useRouter();
 
   useFocusEffect(useCallback(() => {
     supabase.from('friends').select('*').order('created_at')
       .then(({ data }) => setFriends((data as Friend[]) ?? []));
+    supabase.from('wingpeople').select('display_name').single()
+      .then(({ data }) => setNeedsName(!!data && !data.display_name));
   }, []));
+
+  const saveName = async () => {
+    const trimmed = nameDraft.trim();
+    if (!trimmed) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { error } = await supabase.from('wingpeople').update({ display_name: trimmed }).eq('id', user.id);
+    if (error) Alert.alert('Hmm', error.message);
+    else setNeedsName(false);
+  };
 
   return (
     <View style={s.wrap}>
+      {needsName && (
+        <View style={s.nameCard}>
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
+          <Text style={s.nameCardText}>What's your name? Your friends' matches see it on chat invites.</Text>
+          <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+            <TextInput style={s.nameInput} placeholder="Your name" placeholderTextColor={colors.muted}
+              value={nameDraft} onChangeText={setNameDraft} />
+            <Pressable style={({ pressed }) => [s.nameSave, pressed && s.nameSavePressed]} onPress={saveName}>
+              <Text style={s.nameSaveText}>Save</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
       <FlatList
         data={friends}
         keyExtractor={(f) => f.id}
@@ -66,4 +93,11 @@ const s = StyleSheet.create({
   add: { position: 'absolute', right: 20, bottom: 24, width: 52, height: 52, borderRadius: 26,
          backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' },
   addPressed: { backgroundColor: colors.brandDeep },
+  nameCard: { ...cardBase, margin: 16, marginBottom: 0, padding: spacing.lg, gap: spacing.md },
+  nameCardText: { color: colors.ink, fontSize: 15, fontWeight: '600' },
+  nameInput: { flex: 1, backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.line, borderRadius: radii.sm,
+               paddingHorizontal: 12, paddingVertical: 10, fontSize: 15, color: colors.ink },
+  nameSave: { backgroundColor: colors.brand, borderRadius: radii.sm, paddingHorizontal: 18, justifyContent: 'center' },
+  nameSavePressed: { backgroundColor: colors.brandDeep },
+  nameSaveText: { color: colors.white, fontWeight: '600' },
 });
