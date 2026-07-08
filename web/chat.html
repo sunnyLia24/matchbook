@@ -269,7 +269,7 @@
   };
   const showEnded = () => {
     $('composer').classList.add('hidden'); $('hint').classList.add('hidden');
-    $('end').classList.add('hidden');
+    $('end').classList.add('hidden'); $('about').classList.add('hidden');
     const d = document.createElement('div'); d.className = 'sys';
     d.textContent = 'This chat has ended.';
     $('log').appendChild(d); $('log').scrollTop = $('log').scrollHeight;
@@ -325,6 +325,8 @@
     const hasCard = c.role === 'friend' && renderCard(c.suitor_card);
     if (c.role === 'friend' && !entered && !c.messages.some((m) => m.sender === 'friend')) {
       $('inviteTitle').textContent = gateTitle;
+      $('decline').classList.remove('hidden');
+      $('enter').textContent = 'Enter chat';
       $('invite').classList.remove('hidden');
     }
     if (hasCard) {
