@@ -7,6 +7,13 @@
       "runtimeArgs": ["-m", "http.server", "8934"],
       "port": 8934,
       "cwd": "web"
+    },
+    {
+      "name": "app-web",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["NODE_OPTIONS=--experimental-websocket", "npx", "expo", "start", "--web", "--port", "8081"],
+      "port": 8081,
+      "cwd": "app"
     }
   ]
 }
