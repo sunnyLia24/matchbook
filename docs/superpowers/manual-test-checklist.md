@@ -113,6 +113,18 @@ Attempt `create_chat` (or tap Say hi, if somehow rendered) against a slug whose 
   same RPC the confirmed handler calls) and confirmed both tabs update correctly. A real
   user tapping through the native dialog is unaffected.
 
+## 13. Suitor card (wingman → friend)
+In the app, tap **Forward** on an active chat.
+**Expected:** the "Who did they meet?" sheet appears (not the share sheet). Add a photo,
+name, IG, tap 2 vouch chips, tap **Share the link** — share sheet opens with the same
+message as before. Re-tap Forward: sheet reopens pre-filled. Tap **Skip** on another
+chat: share sheet opens immediately, nothing saved.
+Open the friend link on a chat with a card.
+**Expected:** gate reads "<Wingperson> vouches for <Name>" with photo, chips, tappable
+@handle (opens instagram.com/<handle>); after entering, an "about <Name>" header button
+reopens the card. A chat without a card shows today's plain gate. The guest side never
+shows any of it (and `get_chat` for the guest token has no `suitor_card` key).
+
 ## Sign in with Apple (TestFlight build required — does not work in Expo Go/simulator)
 
 - [ ] Apple button (black, native) shows above the email form with an "or" divider

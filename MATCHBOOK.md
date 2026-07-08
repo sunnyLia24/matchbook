@@ -10,7 +10,7 @@ The magic is what happens next — **no one else ever needs an account**:
 
 1. The party guest opens the link in their browser, sees the profile, and taps **"Say hi 👋"** — this creates a private chat room and drops them in.
 2. You get a push notification ("Someone wants to talk to Jenny!") and forward Jenny her secret chat link by text.
-3. Jenny opens it and first sees an **intro gate**: *"Lia vouches for this — they met someone who'd like to chat with you"* with **Enter chat** or **Not interested**.
+3. Jenny opens it and first sees an **intro gate**: *"Lia vouches for this — they met someone who'd like to chat with you"* with **Enter chat** or **Not interested**. Before forwarding, the wingperson can attach an optional suitor card — photo, first name, Instagram, and tapped vouch reasons — that only the friend sees at the gate.
 4. They chat in real time. Either person can type **STOP** (or tap End chat) at any moment — the chat locks **permanently, enforced in the database**, no reopening ever. Declining the intro does the same.
 
 Positioning: introductions between real friends with a human vouching for them — *a wink, not a swipe*. Explicitly not Tinder/Hinge.
@@ -46,6 +46,7 @@ Done and verified:
 - Web app deployed and e2e-tested (23/23 checks: profile → say hi → intro gate → two-way live chat → STOP from both sides → status-flip kill).
 - iOS app complete and typechecked; EAS configured; iOS build succeeded on Expo's servers.
 - Sign in with Apple added (2026-07-07): native `expo-apple-authentication` + Supabase Apple provider; migration 006 removed email-prefix display-name defaults.
+- Suitor card (2026-07-08): migration 008, app sheet, friend-gate card; suite 05 + full regression pass.
 
 In flight / remaining:
 - **TestFlight submit** — Lia's interactive `eas submit` (App Store Connect app record + upload). After the stored API key setup, future submits are hands-free.
