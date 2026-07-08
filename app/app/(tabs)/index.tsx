@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
-import { Friend } from '../../src/types';
+import { Friend, Gender } from '../../src/types';
 import { colors, radii, spacing, buttonBase, cardBase, brandGlow } from '../../src/theme';
 
 export default function Roster() {
@@ -10,6 +10,15 @@ export default function Roster() {
   const [needsName, setNeedsName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
   const router = useRouter();
+
+  type GenderFilter = 'all' | Gender;
+  const FILTER_LABELS: Record<GenderFilter, string> = {
+    all: 'All', guy: 'Guys', girl: 'Girls', nonbinary: 'Enby',
+  };
+  const [filter, setFilter] = useState<GenderFilter>('all');
+  const hasEnby = friends.some((f) => f.gender === 'nonbinary');
+  const filters: GenderFilter[] = hasEnby ? ['all', 'guy', 'girl', 'nonbinary'] : ['all', 'guy', 'girl'];
+  const shown = filter === 'all' ? friends : friends.filter((f) => f.gender === filter);
 
   useFocusEffect(useCallback(() => {
     supabase.from('friends').select('*').order('created_at')
@@ -42,11 +51,24 @@ export default function Roster() {
           </View>
         </View>
       )}
+      {friends.length > 0 && (
+        <View style={s.filterRow}>
+          {filters.map((g) => (
+            <Pressable key={g} style={[s.filterChip, filter === g && s.filterChipOn]} onPress={() => setFilter(g)}>
+              <Text style={filter === g ? s.filterChipOnText : s.filterChipText}>{FILTER_LABELS[g]}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
       <FlatList
-        data={friends}
+        data={shown}
         keyExtractor={(f) => f.id}
         contentContainerStyle={{ padding: 16, gap: 12 }}
-        ListEmptyComponent={<Text style={s.empty}>Add your first single friend 💘</Text>}
+        ListEmptyComponent={<Text style={s.empty}>
+          {filter === 'all'
+            ? 'Add your first single friend 💘'
+            : `No ${FILTER_LABELS[filter].toLowerCase()} on your roster yet 💔`}
+        </Text>}
         renderItem={({ item }) => (
           <Pressable style={({ pressed }) => [s.row, pressed && s.rowPressed]} onPress={() => router.push(`/friend/${item.id}`)}>
             {item.photos[0]
@@ -63,8 +85,11 @@ export default function Roster() {
         )}
       />
       {friends.length > 0 && (
-        <Pressable style={({ pressed }) => [s.deckBtn, pressed && s.deckBtnPressed]} onPress={() => router.push('/deck')}>
-          <Text style={s.deckText}>🎉 Party mode</Text>
+        <Pressable style={({ pressed }) => [s.deckBtn, pressed && s.deckBtnPressed]}
+          onPress={() => router.push(filter === 'all' ? '/deck' : `/deck?gender=${filter}`)}>
+          <Text style={s.deckText}>
+            🎉 Party mode{filter !== 'all' ? ` · ${FILTER_LABELS[filter].toLowerCase()}` : ''}
+          </Text>
         </Pressable>
       )}
       <Pressable style={({ pressed }) => [s.add, pressed && s.addPressed]} onPress={() => router.push('/friend/new')}>
@@ -100,4 +125,10 @@ const s = StyleSheet.create({
   nameSave: { backgroundColor: colors.brand, borderRadius: radii.sm, paddingHorizontal: 18, justifyContent: 'center' },
   nameSavePressed: { backgroundColor: colors.brandDeep },
   nameSaveText: { color: colors.onBrand, fontWeight: '700' },
+  filterRow: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingTop: 12 },
+  filterChip: { minHeight: 32, borderWidth: 1, borderColor: colors.line, borderRadius: radii.pill,
+                paddingVertical: 6, paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' },
+  filterChipOn: { backgroundColor: colors.brand, borderColor: colors.brand },
+  filterChipText: { color: colors.muted, fontWeight: '600' },
+  filterChipOnText: { color: colors.onBrand, fontWeight: '700' },
 });
