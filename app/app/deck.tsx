@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, FlatList, Image, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { supabase } from '../src/lib/supabase';
 import { WEB_BASE_URL } from '../src/lib/config';
 import { Friend } from '../src/types';
@@ -12,11 +12,13 @@ const { width: W } = Dimensions.get('window');
 export default function Deck() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const router = useRouter();
+  const { gender } = useLocalSearchParams<{ gender?: string }>();
 
   useEffect(() => {
-    supabase.from('friends').select('*').eq('status', 'single').eq('consented', true)
-      .order('created_at').then(({ data }) => setFriends((data as Friend[]) ?? []));
-  }, []);
+    let q = supabase.from('friends').select('*').eq('status', 'single').eq('consented', true);
+    if (gender) q = q.eq('gender', gender);
+    q.order('created_at').then(({ data }) => setFriends((data as Friend[]) ?? []));
+  }, [gender]);
 
   const share = (f: Friend) =>
     Share.share({ message: `Meet ${f.first_name} 🔥 ${WEB_BASE_URL}/p/${f.share_slug}` });
