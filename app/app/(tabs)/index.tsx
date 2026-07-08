@@ -3,7 +3,7 @@ import { Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } 
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
 import { Friend } from '../../src/types';
-import { colors, radii, spacing, buttonBase, cardBase } from '../../src/theme';
+import { colors, radii, spacing, buttonBase, cardBase, brandGlow } from '../../src/theme';
 
 export default function Roster() {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -34,7 +34,7 @@ export default function Roster() {
         <View style={s.nameCard}>
           <Text style={s.nameCardText}>What’s your name? Your friends’ matches see it on chat invites.</Text>
           <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-            <TextInput style={s.nameInput} placeholder="Your name" placeholderTextColor={colors.muted}
+            <TextInput style={s.nameInput} placeholder="Your name" placeholderTextColor={colors.muted} keyboardAppearance="dark"
               value={nameDraft} onChangeText={setNameDraft} />
             <Pressable style={({ pressed }) => [s.nameSave, pressed && s.nameSavePressed]} onPress={saveName}>
               <Text style={s.nameSaveText}>Save</Text>
@@ -68,7 +68,7 @@ export default function Roster() {
         </Pressable>
       )}
       <Pressable style={({ pressed }) => [s.add, pressed && s.addPressed]} onPress={() => router.push('/friend/new')}>
-        <Text style={{ color: colors.white, fontSize: 30, lineHeight: 32 }}>+</Text>
+        <Text style={{ color: colors.onBrand, fontSize: 30, lineHeight: 32 }}>+</Text>
       </Pressable>
     </View>
   );
@@ -78,19 +78,20 @@ const s = StyleSheet.create({
   wrap: { flex: 1, backgroundColor: colors.bg },
   empty: { textAlign: 'center', color: colors.muted, marginTop: 60, fontSize: 16 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, ...cardBase, padding: spacing.md },
-  rowPressed: { backgroundColor: colors.bg },
+  rowPressed: { backgroundColor: colors.elevated },
   avatar: { width: 54, height: 54, borderRadius: 27 },
-  avatarEmpty: { backgroundColor: colors.line, alignItems: 'center', justifyContent: 'center' },
+  avatarEmpty: { backgroundColor: colors.elevated, alignItems: 'center', justifyContent: 'center' },
   name: { fontSize: 17, fontWeight: '800', letterSpacing: -0.2, color: colors.ink },
   pitch: { color: colors.muted, marginTop: 2 },
   badge: { fontSize: 12, color: colors.brand, fontWeight: '600', textTransform: 'lowercase' },
   badgeOff: { color: colors.muted },
   deckBtn: { ...buttonBase, position: 'absolute', bottom: 24, alignSelf: 'center', minHeight: 0,
-             backgroundColor: colors.night, paddingVertical: 14, paddingHorizontal: 26, borderRadius: radii.pill },
+             backgroundColor: colors.elevated, borderWidth: 1, borderColor: colors.line,
+             paddingVertical: 14, paddingHorizontal: 26, borderRadius: radii.pill },
   deckBtnPressed: { opacity: 0.85 },
-  deckText: { color: colors.white, fontSize: 17, fontWeight: '600' },
+  deckText: { color: colors.champagne, fontSize: 17, fontWeight: '700' },
   add: { position: 'absolute', right: 20, bottom: 24, width: 52, height: 52, borderRadius: 26,
-         backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' },
+         backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center', ...brandGlow },
   addPressed: { backgroundColor: colors.brandDeep },
   nameCard: { ...cardBase, margin: 16, marginBottom: 0, padding: spacing.lg, gap: spacing.md },
   nameCardText: { color: colors.ink, fontSize: 15, fontWeight: '600' },
@@ -98,5 +99,5 @@ const s = StyleSheet.create({
                paddingHorizontal: 12, paddingVertical: 10, fontSize: 15, color: colors.ink },
   nameSave: { backgroundColor: colors.brand, borderRadius: radii.sm, paddingHorizontal: 18, justifyContent: 'center' },
   nameSavePressed: { backgroundColor: colors.brandDeep },
-  nameSaveText: { color: colors.white, fontWeight: '600' },
+  nameSaveText: { color: colors.onBrand, fontWeight: '700' },
 });

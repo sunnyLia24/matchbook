@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matchbook — 3 design directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: Inter, -apple-system, sans-serif; background: #111014; color: #EDEAF0; padding: 48px 32px 80px; }
+  h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+  .sub { color: #9B93A6; margin-top: 6px; font-size: 15px; max-width: 70ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; margin-top: 44px; }
+  .direction h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+  .direction .tag { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9B93A6; }
+  .direction p.desc { color: #B9B2C4; font-size: 14px; line-height: 1.5; margin-top: 8px; min-height: 84px; }
+  .swatches { display: flex; gap: 6px; margin: 12px 0 20px; }
+  .swatches span { width: 34px; height: 34px; border-radius: 8px; display: block; border: 1px solid rgba(255,255,255,0.12); }
+  .phone { width: 320px; height: 640px; margin: 0 auto; border-radius: 44px; border: 1px solid rgba(255,255,255,0.14); overflow: hidden; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+
+  /* ============ A. AFTER DARK ============ */
+  .a-phone { background: #17101A; color: #F4EDF6; }
+  .a-photo { height: 62%; position: relative; background:
+      radial-gradient(120% 80% at 70% 20%, #5A2547 0%, #2A1430 55%, #17101A 100%); }
+  .a-photo .face { position: absolute; inset: 0; display: grid; place-items: center; font-size: 120px; opacity: 0.9; }
+  .a-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: linear-gradient(to top, #17101A 8%, transparent); }
+  .a-meta { position: absolute; left: 22px; right: 22px; bottom: 14px; }
+  .a-name { font-size: 34px; font-weight: 900; letter-spacing: -0.03em; }
+  .a-name small { font-weight: 400; font-size: 22px; color: #C9B8D4; }
+  .a-city { color: #C9B8D4; font-size: 13px; margin-top: 2px; }
+  .a-body { padding: 16px 22px; }
+  .a-vouch { font-size: 15px; line-height: 1.45; font-weight: 500; }
+  .a-vouch b { color: #FF2E63; }
+  .a-vouchby { margin-top: 8px; font-size: 12px; color: #A08CAD; }
+  .a-vouchby span { display: inline-block; background: #2A1430; border: 1px solid #4A2647; color: #E3C08D; border-radius: 999px; padding: 3px 10px; font-weight: 600; }
+  .a-cta { position: absolute; left: 22px; right: 22px; bottom: 20px; background: #FF2E63; color: #fff; text-align: center; font-weight: 700; font-size: 16px; padding: 15px; border-radius: 999px; box-shadow: 0 8px 28px rgba(255,46,99,0.45); }
+
+  /* ============ B. EDITORIAL IVORY ============ */
+  .b-phone { background: #F6F1E9; color: #1E1A16; font-family: Inter; }
+  .b-top { padding: 20px 22px 0; }
+  .b-mark { font-family: Fraunces, serif; font-style: italic; font-size: 15px; color: #B03A48; }
+  .b-name { font-family: Fraunces, serif; font-size: 42px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.02; margin-top: 10px; }
+  .b-name small { font-family: Fraunces, serif; font-weight: 400; font-style: italic; font-size: 26px; color: #7A6E5F; }
+  .b-city { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #7A6E5F; margin-top: 8px; }
+  .b-photo { margin: 16px 22px 0; height: 46%; border-radius: 4px; background:
+      linear-gradient(160deg, #D8CDBC 0%, #B8A890 60%, #8F7E68 100%); position: relative; filter: saturate(0.4); }
+  .b-photo .face { position: absolute; inset: 0; display: grid; place-items: center; font-size: 110px; }
+  .b-vouch { padding: 18px 22px 0; font-family: Fraunces, serif; font-size: 17px; line-height: 1.4; }
+  .b-vouch::before { content: '\201C'; font-size: 34px; color: #B03A48; line-height: 0; vertical-align: -10px; margin-right: 2px; }
+  .b-vouchby { padding: 10px 22px 0; font-size: 12px; color: #7A6E5F; }
+  .b-vouchby i { font-family: Fraunces, serif; }
+  .b-cta { position: absolute; left: 22px; right: 22px; bottom: 20px; background: #1E1A16; color: #F6F1E9; text-align: center; font-weight: 600; font-size: 16px; padding: 16px; border-radius: 2px; }
+  .b-cta em { font-family: Fraunces, serif; font-style: italic; color: #E8B4B8; }
+
+  /* ============ C. STICKER POP ============ */
+  .c-phone { background: #FFF6EC; color: #241629; }
+  .c-photo { margin: 14px; height: 54%; border-radius: 28px; background:
+      linear-gradient(150deg, #FFB7C5 0%, #C9A7EB 55%, #8E7BEF 100%); position: relative; border: 3px solid #241629; }
+  .c-photo .face { position: absolute; inset: 0; display: grid; place-items: center; font-size: 110px; }
+  .c-badge { position: absolute; top: -12px; right: -6px; background: #FFD84D; border: 3px solid #241629; border-radius: 999px; padding: 8px 14px; font-weight: 800; font-size: 13px; transform: rotate(6deg); color: #241629; }
+  .c-name-chip { position: absolute; bottom: -18px; left: 14px; background: #FF4D7D; color: #fff; border: 3px solid #241629; border-radius: 16px; padding: 8px 16px; font-weight: 900; font-size: 24px; letter-spacing: -0.02em; font-family: 'Space Grotesk'; transform: rotate(-2deg); }
+  .c-body { padding: 30px 20px 0; }
+  .c-vouch { background: #fff; border: 3px solid #241629; border-radius: 18px; padding: 14px; font-size: 15px; line-height: 1.4; font-weight: 500; box-shadow: 5px 5px 0 #241629; }
+  .c-vouch .who { display: block; margin-top: 8px; font-weight: 800; font-size: 12px; color: #8E7BEF; }
+  .c-tags { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .c-tags span { border: 2.5px solid #241629; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 12px; background: #C4F0C5; }
+  .c-tags span:nth-child(2) { background: #FFD84D; }
+  .c-tags span:nth-child(3) { background: #FFB7C5; }
+  .c-cta { position: absolute; left: 20px; right: 20px; bottom: 20px; background: #FF4D7D; color: #fff; border: 3px solid #241629; text-align: center; font-weight: 900; font-size: 17px; padding: 15px; border-radius: 999px; box-shadow: 5px 5px 0 #241629; font-family: 'Space Grotesk'; }
+
+  .notes { margin-top: 18px; font-size: 13px; color: #9B93A6; line-height: 1.55; }
+  .notes b { color: #EDEAF0; }
+</style>
+</head>
+<body>
+<h1>Matchbook — three fresh directions</h1>
+<p class="sub">Same screen (guest-facing profile /p/) mocked in each direction. Sourced from current dating-app patterns on Dribbble and Mobbin: full-bleed photo + overlay type, editorial serif identity, and playful sticker maximalism.</p>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="direction">
+    <div class="tag">Direction A</div>
+    <h2>After Dark</h2>
+    <p class="desc">Party-native. The whole product lives in the deep plum-black of the current deck screen; photos go full-bleed with the name overlaid on a scrim. One hot neon-adjacent red. Feels like the room where the introduction happens. Closest evolution of what exists.</p>
+    <div class="swatches">
+      <span style="background:#17101A"></span><span style="background:#2A1430"></span><span style="background:#FF2E63"></span><span style="background:#E3C08D"></span><span style="background:#F4EDF6"></span>
+    </div>
+    <div class="phone a-phone">
+      <div class="a-photo"><div class="face">🥂</div><div class="a-scrim"></div>
+        <div class="a-meta">
+          <div class="a-name">Maya <small>27</small></div>
+          <div class="a-city">Brooklyn</div>
+        </div>
+      </div>
+      <div class="a-body">
+        <div class="a-vouch">"The funniest person I know, and she'll <b>out-cook</b> your favorite restaurant."</div>
+        <div class="a-vouchby">vouched by <span>Lia ✦</span></div>
+      </div>
+      <div class="a-cta">Say hi 👋</div>
+    </div>
+    <p class="notes"><b>Type:</b> heavy sans (Inter/SF 900), tight tracking. <b>Wins:</b> photos glow in dim light, zero rework of party mode. <b>Risk:</b> dark UI in daylight sharing moments.</p>
+  </div>
+
+  <!-- B -->
+  <div class="direction">
+    <div class="tag">Direction B</div>
+    <h2>Editorial Ivory</h2>
+    <p class="desc">The vouch as a magazine profile. Warm ivory, near-black ink, Fraunces serif for names and the wingperson's pitch, oxblood red used like an editor's pen — never as big color fields. Hinge-adjacent confidence, but print-flavored and more personal.</p>
+    <div class="swatches">
+      <span style="background:#F6F1E9"></span><span style="background:#1E1A16"></span><span style="background:#B03A48"></span><span style="background:#E8B4B8"></span><span style="background:#7A6E5F"></span>
+    </div>
+    <div class="phone b-phone">
+      <div class="b-top">
+        <div class="b-mark">Matchbook, introduced by Lia</div>
+        <div class="b-name">Maya, <small>27</small></div>
+        <div class="b-city">Brooklyn · Looking for something real</div>
+      </div>
+      <div class="b-photo"><div class="face">🥂</div></div>
+      <div class="b-vouch">The funniest person I know, and she'll out-cook your favorite restaurant.</div>
+      <div class="b-vouchby">— <i>her wingperson</i></div>
+      <div class="b-cta">Say hi to <em>Maya</em></div>
+    </div>
+    <p class="notes"><b>Type:</b> Fraunces (serif) display + Inter body. <b>Wins:</b> instantly distinctive, flatters any photo, reads "vouched-for" not "app". <b>Risk:</b> serif needs font loading on web + Expo.</p>
+  </div>
+
+  <!-- C -->
+  <div class="direction">
+    <div class="tag">Direction C</div>
+    <h2>Sticker Pop</h2>
+    <p class="desc">The wingperson's scrapbook. Cream base, hot pink + violet + butter yellow, thick ink outlines, sticker badges, hand-placed rotation. Loud, Gen-Z, unmistakably fun — leans hard into "a wink, not a swipe." Furthest from today's look.</p>
+    <div class="swatches">
+      <span style="background:#FFF6EC"></span><span style="background:#FF4D7D"></span><span style="background:#8E7BEF"></span><span style="background:#FFD84D"></span><span style="background:#241629"></span>
+    </div>
+    <div class="phone c-phone">
+      <div class="c-photo"><div class="face">🥂</div>
+        <div class="c-badge">certified great ✦</div>
+        <div class="c-name-chip">Maya, 27</div>
+      </div>
+      <div class="c-body">
+        <div class="c-vouch">"The funniest person I know, and she'll out-cook your favorite restaurant."
+          <span class="who">— LIA, HER WINGPERSON</span>
+        </div>
+        <div class="c-tags"><span>Brooklyn</span><span>chef energy</span><span>dog person</span></div>
+      </div>
+      <div class="c-cta">SAY HI 👋</div>
+    </div>
+    <p class="notes"><b>Type:</b> Space Grotesk display + Inter body. <b>Wins:</b> extremely shareable/screenshot-able, huge personality. <b>Risk:</b> can read young; outlines need discipline to stay premium.</p>
+  </div>
+
+</div>
+</body>
+</html>

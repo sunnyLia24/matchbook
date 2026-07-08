@@ -1,21 +1,23 @@
-// Matchbook brand system — hex (RN) values per DESIGN.md.
-// "a great wingperson's introduction at a house party — lipstick-red confidence,
-//  champagne warmth, a wink not a swipe."
+// Matchbook brand system — "After Dark" (hex values per DESIGN.md).
+// "the party itself — a dim room, warm skin tones glowing, one hot
+//  lipstick-neon accent. The introduction happens at night."
 
 export const colors = {
-  brand: '#BE1E5E', // primary actions, brand moments
-  brandDeep: '#8A1244', // pressed states, dark-surface brand
-  bg: '#FBF7F9', // light page background (barely-blush white)
-  surface: '#FFFFFF', // cards, inputs
-  ink: '#33222B', // body text
-  muted: '#75606B', // secondary text
-  line: '#E4DBE0', // hairline borders
-  night: '#2B1B24', // party-mode (deck) background — deep plum
-  nightInk: '#F5EDF2', // text on night
-  nightMuted: '#B79FAC', // secondary text on night
-  champagne: '#E3C08D', // rare garnish only — badges, deck highlight. Never backgrounds, never on light bg.
-  nightElevated: '#3D2836', // derived: night surface raised one step (photo placeholder, prompt cards on deck)
-  white: '#FFFFFF', // literal white for text/icons on brand/night surfaces
+  brand: '#FF2E63', // primary actions, accents, vouch moments
+  brandDeep: '#D91E4F', // pressed states
+  onBrand: '#23060F', // text/icons on brand surfaces (never white — fails contrast)
+  bg: '#17101A', // app background (deep plum-black)
+  surface: '#221727', // cards, inputs
+  elevated: '#2E1E33', // raised chips, prompt cards, photo placeholders
+  ink: '#F4EDF6', // body text
+  muted: '#A891B5', // secondary text
+  line: '#3A2941', // hairline borders
+  night: '#100A13', // deck (party mode) background — one step deeper than bg
+  nightInk: '#F4EDF6', // text on night
+  nightMuted: '#A891B5', // secondary text on night
+  nightElevated: '#2E1E33', // raised surfaces on night
+  champagne: '#E3C08D', // garnish only — vouched-by chip, deck highlight. Never backgrounds.
+  white: '#FFFFFF', // rare: literal white (avatars ring, Apple button)
 } as const;
 
 export const radii = {
@@ -38,7 +40,7 @@ export const spacing = {
 // Shared building blocks used across screens.
 export const buttonBase = {
   minHeight: 52,
-  borderRadius: radii.md,
+  borderRadius: radii.pill,
   alignItems: 'center' as const,
   justifyContent: 'center' as const,
 };
@@ -49,3 +51,11 @@ export const cardBase = {
   borderWidth: 1,
   borderColor: colors.line,
 };
+
+// Brand glow for primary CTAs (iOS shadow props).
+export const brandGlow = {
+  shadowColor: colors.brand,
+  shadowOpacity: 0.35,
+  shadowRadius: 14,
+  shadowOffset: { width: 0, height: 6 },
+} as const;

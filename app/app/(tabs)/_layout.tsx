@@ -9,7 +9,8 @@ export default function TabsLayout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: colors.brand, tabBarInactiveTintColor: colors.muted,
       headerShown: true, headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink,
-      headerShadowVisible: false }}>
+      headerShadowVisible: false,
+      tabBarStyle: { backgroundColor: colors.bg, borderTopColor: colors.line } }}>
       <Tabs.Screen name="index" options={{ title: 'Roster',
         tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} /> }} />
       <Tabs.Screen name="chats" options={{ title: 'Chats',

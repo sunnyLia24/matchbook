@@ -4,17 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#17101A">
 <title>Matchbook</title>
 <style>
   :root {
-    --brand: oklch(0.58 0.22 355);
-    --brand-deep: oklch(0.42 0.19 355);
-    --bg: oklch(0.975 0.005 355);
-    --surface: oklch(1 0 0);
-    --ink: oklch(0.24 0.02 355);
-    --muted: oklch(0.50 0.02 355);
-    --line: oklch(0.90 0.01 355);
-    --champagne: oklch(0.80 0.10 85);
+    --bg: #17101A;
+    --surface: #221727;
+    --elevated: #2E1E33;
+    --ink: #F4EDF6;
+    --muted: #A891B5;
+    --line: #3A2941;
+    --brand: #FF2E63;
+    --brand-press: #D91E4F;
+    --on-brand: #23060F;
+    --champagne: #E3C08D;
     --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   }
   * { box-sizing: border-box; margin: 0; }
@@ -30,62 +33,95 @@
   .card {
     width: 100%;
     max-width: 430px;
-    padding: 20px 20px 40px;
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
     animation: rise-in 380ms var(--ease-out-quart) both;
   }
+  /* Full-bleed photo carousel with the name overlaid — photos are the hero */
+  .hero { position: relative; }
   .photos {
     display: flex;
-    gap: 8px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    border-radius: 24px;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .photos::-webkit-scrollbar { display: none; }
   .photos img {
     width: 100%;
     flex: none;
     aspect-ratio: 4/5;
     object-fit: cover;
-    border-radius: 24px;
-    box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.35);
     scroll-snap-align: center;
-    background: var(--line);
+    background: var(--elevated);
+  }
+  .scrim {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top, var(--bg) 8%, rgba(23, 16, 26, 0.55) 55%, transparent);
+    pointer-events: none;
+  }
+  .id {
+    position: absolute;
+    left: 20px; right: 20px; bottom: 14px;
+    pointer-events: none;
   }
   h1 {
-    font-size: 32px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
     text-wrap: balance;
-    margin-top: 20px;
   }
   h1 small {
     font-weight: 400;
     color: var(--muted);
-    font-size: 21px;
+    font-size: 24px;
     letter-spacing: normal;
   }
-  .city { color: var(--muted); margin-top: 4px; font-size: 15px; }
+  .city { color: var(--muted); margin-top: 2px; font-size: 15px; font-weight: 500; }
+  .body { padding: 18px 20px 0; }
   .pitch {
-    margin-top: 18px;
     font-size: 19px;
     font-weight: 500;
     line-height: 1.45;
     max-width: 70ch;
-    position: relative;
-    padding-left: 4px;
   }
   .pitch::before {
     content: '\201C';
     color: var(--brand);
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: 800;
     margin-right: 1px;
   }
   .pitch::after {
-    content: '\201D \2014 their wingperson';
+    content: '\201D';
     color: var(--muted);
-    font-size: 14px;
-    font-weight: 400;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chips span {
+    background: var(--elevated);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 13px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .vouchedby {
+    display: inline-block;
+    margin-top: 12px;
+    background: var(--elevated);
+    border: 1px solid var(--line);
+    color: var(--champagne);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
   }
   .prompt {
     background: var(--surface);
@@ -103,20 +139,29 @@
   }
   .prompt .a { margin-top: 4px; font-size: 17px; line-height: 1.45; }
   .looking { margin-top: 16px; color: var(--muted); font-size: 15px; }
+  .cta {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: calc(100% - 40px);
+    max-width: 390px;
+    z-index: 5;
+  }
   button {
     width: 100%;
-    margin-top: 26px;
-    min-height: 52px;
+    min-height: 54px;
     padding: 16px;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     border: 0;
-    border-radius: 16px;
+    border-radius: 999px;
     background: var(--brand);
-    color: var(--surface);
+    color: var(--on-brand);
+    box-shadow: 0 8px 28px rgba(255, 46, 99, 0.35);
     transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
   }
-  button:active:not(:disabled) { transform: scale(0.98); background: var(--brand-deep); }
+  button:active:not(:disabled) { transform: scale(0.98); background: var(--brand-press); }
   button:disabled { opacity: 0.55; }
   .state {
     text-align: center;
@@ -146,13 +191,22 @@
 </head>
 <body>
 <div class="card hidden" id="card">
-  <div class="photos" id="photos"></div>
-  <h1><span id="name"></span> <small id="age"></small></h1>
-  <div class="city" id="city"></div>
-  <div class="pitch" id="pitch"></div>
-  <div id="prompts"></div>
-  <div class="looking" id="looking"></div>
-  <button id="sayhi">Say hi 👋</button>
+  <div class="hero">
+    <div class="photos" id="photos"></div>
+    <div class="scrim"></div>
+    <div class="id">
+      <h1><span id="name"></span> <small id="age"></small></h1>
+      <div class="city" id="city"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="pitch" id="pitch"></div>
+    <div class="vouchedby">vouched by their wingperson ✦</div>
+    <div class="chips" id="interests"></div>
+    <div id="prompts"></div>
+    <div class="looking" id="looking"></div>
+  </div>
+  <div class="cta"><button id="sayhi">Say hi 👋</button></div>
 </div>
 <div class="state hidden" id="state"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -173,8 +227,11 @@
     }
     $('name').textContent = p.first_name;
     $('age').textContent = p.age ? p.age : '';
-    $('city').textContent = p.city || '';
+    $('city').textContent = [p.city, p.job, p.height].filter(Boolean).join(' · ');
     $('pitch').textContent = p.pitch || '';
+    for (const tag of (p.interests || [])) {
+      const c = document.createElement('span'); c.textContent = tag; $('interests').appendChild(c);
+    }
     for (const pr of (p.prompts || [])) {
       const d = document.createElement('div'); d.className = 'prompt';
       const q = document.createElement('div'); q.className = 'q'; q.textContent = pr.q;

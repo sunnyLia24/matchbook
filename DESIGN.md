@@ -1,63 +1,61 @@
-# Design
+# Design — "After Dark"
 
-Mood: **"a great wingperson's introduction at a house party — lipstick-red confidence, champagne warmth, a wink not a swipe."**
+Mood: **"the party itself — a dim room, warm skin tones glowing, one hot lipstick-neon accent. The introduction happens at night."**
 
-Seed: `oklch(0.636 0.218 355.3)` (impeccable seed-115, lipstick red, hue 355°). Primary hue stays within ±10° of 355.
+Direction chosen 2026-07-06 (Dribbble/Mobbin research: full-bleed photo + overlay type, dark nightlife surfaces, single hot accent). Replaces the light blush system.
 
 ## Color
 
-Strategy: **committed** — lipstick red carries the brand moments (buttons, invite screen, deck accents); surfaces stay clean so photos win.
+Strategy: **dark-first everywhere.** Every surface (web + app) lives on deep plum-black; photos are the only bright thing on screen and therefore always win. One hot accent — neon lipstick `--brand` — owns primary actions and vouch moments. Dark ink on brand buttons (5.3:1), never white (3.6:1 — fails).
 
-Tokens (OKLCH; hex fallbacks for RN in parentheses):
+| Token | Hex | Role |
+|---|---|---|
+| `--bg` | `#17101A` | Page/app background (deep plum-black) |
+| `--surface` | `#221727` | Cards, inputs, their-side chat bubbles |
+| `--elevated` | `#2E1E33` | Raised chips, prompt cards, photo placeholders |
+| `--ink` | `#F4EDF6` | Body text (16.3:1 on bg) |
+| `--muted` | `#A891B5` | Secondary text (6.6:1 on bg, 6.1:1 on surface) |
+| `--line` | `#3A2941` | Hairline borders |
+| `--brand` | `#FF2E63` | Primary actions, accents, my-side bubbles (5.2:1 on bg as text) |
+| `--brand-press` | `#D91E4F` | Pressed states |
+| `--on-brand` | `#23060F` | Text/icons on brand surfaces (5.3:1) |
+| `--champagne` | `#E3C08D` | Garnish only: vouched-by chip, deck highlight (10.8:1) |
 
-| Token | Value | Hex (RN) | Role |
-|---|---|---|---|
-| `--brand` | `oklch(0.58 0.22 355)` | `#C2185B`-adjacent → use `#BE1E5E` | Primary actions, brand moments |
-| `--brand-deep` | `oklch(0.42 0.19 355)` | `#8A1244` | Pressed states, dark-surface brand |
-| `--bg` | `oklch(0.975 0.005 355)` | `#FBF7F9` | Light page background (barely-blush white, chroma 0.005 — NOT cream) |
-| `--surface` | `oklch(1 0 0)` | `#FFFFFF` | Cards, inputs |
-| `--ink` | `oklch(0.24 0.02 355)` | `#33222B` | Body text (≥4.5:1 on bg/surface) |
-| `--muted` | `oklch(0.50 0.02 355)` | `#75606B` | Secondary text (4.5:1 on bg) |
-| `--line` | `oklch(0.90 0.01 355)` | `#E4DBE0` | Hairline borders |
-| `--night` | `oklch(0.22 0.03 355)` | `#2B1B24` | Party-mode (deck) background — deep plum, not brown |
-| `--night-ink` | `oklch(0.96 0.01 355)` | `#F5EDF2` | Text on night |
-| `--night-muted` | `oklch(0.72 0.03 355)` | `#B79FAC` | Secondary on night |
-| `--champagne` | `oklch(0.80 0.10 85)` | `#E3C08D` | Rare garnish only (badges, deck highlight) — never backgrounds |
-
-Rules: white/blush surfaces + ink for reading; lipstick `--brand` on primary buttons and vouch moments; the deck (party mode) is drenched `--night`. Never cream/terracotta. Never red-on-red text.
+Rules: photos full-bleed with a bottom scrim, name overlaid; brand glow shadows (`0 8px 28px rgba(255,46,99,.35)`) on primary CTAs only; champagne never a background; never white text on brand.
 
 ## Typography
 
-- System stack everywhere (`-apple-system, 'SF Pro', 'Helvetica Neue', sans-serif` web; default SF on RN) — party-proof and fast. Personality comes from weight contrast, not font pairing.
-- Display (names, "vouches for this"): weight 800, letter-spacing -0.02em, `text-wrap: balance`.
-- Body 16-17px, line-height 1.45, max 70ch.
-- The wingperson's pitch is typographically special: larger (18-19px), weight 500, with an oversized decorative `"` in `--brand` — it's the vouch, the emotional core.
+- System stack (`-apple-system, 'SF Pro', 'Helvetica Neue', sans-serif`; default SF on RN). Personality = weight 900 + tight tracking, not font pairing.
+- Display (names overlaid on photos): weight 900, letter-spacing -0.03em, `text-wrap: balance`.
+- Body 16-17px, line-height 1.45. Safety copy (STOP hint) never below 13px.
+- The wingperson's pitch: 18-19px weight 500, oversized `"` in `--brand`.
 
 ## Components & patterns
 
-- **Buttons**: 16px radius, 52px min height, weight 600. Primary = `--brand` bg + white text. Quiet/destructive-adjacent ("Not interested", "End chat") = ghost with `--muted` text — visible, calm, never hidden.
-- **Cards**: white surface, 1px `--line` border, 20px radius. No side-stripes, no nested cards, no glassmorphism.
-- **Profile photos**: 4:5, 24px radius, subtle inner hairline.
-- **Chat bubbles**: 18px radius; mine = `--brand`/white, theirs = `--surface` + `--line` border + `--ink`.
-- **Invite/vouch screen**: the brand moment — drenched `--brand` background, white type, big display "{Name} vouches for this", white primary button ("Enter chat") on it. Lipstick red owns this screen.
-- **Status badges**: lowercase, weight 600; live = `--brand`, ended/hidden = `--muted`. No pill-spam.
-- **Empty states**: one playful line + one action, on-voice ("No chats yet — go make an introduction 💌").
+- **Buttons**: pill radius (999), 52px min height, weight 700. Primary = `--brand` bg + `--on-brand` text + glow. Quiet/destructive-adjacent = ghost `--muted`, visible and calm.
+- **Cards**: `--surface` bg, 1px `--line` border, 20px radius.
+- **Profile photos**: full-bleed 4:5, bottom scrim `linear-gradient(to top, var(--bg) 8%, transparent)`, name/age/city overlaid bottom-left.
+- **Chat bubbles**: 18px radius; mine = `--brand` + `--on-brand`, theirs = `--surface` + `--line` + `--ink`.
+- **Invite/vouch gate**: dark room with a brand glow — radial plum gradient bg, ink display type, brand pill CTA. No more drenched-red screen.
+- **Vouched-by chip**: `--elevated` bg, `--line` border, `--champagne` text, pill.
+- **Status badges**: lowercase, weight 600; live = `--brand`, ended/hidden = `--muted`.
+- **Empty states**: one playful line + one action, on-voice.
 
 ## Motion
 
-- Ease-out-quart, 200-350ms. Chat messages: 8px rise + fade in. Deck cards: subtle scale-settle on page snap. Invite screen: content fades up once (staggered 40ms).
-- Every animation has a `@media (prefers-reduced-motion: reduce)` instant/crossfade fallback. No bounce, no elastic, no layout-property animation.
+- Ease-out-quart, 200-350ms. Messages: 8px rise + fade. Invite gate: staggered 40ms fade-up. CTA glow may pulse once on load, never loop.
+- All animation has `@media (prefers-reduced-motion: reduce)` instant/crossfade fallback. No bounce, no layout-property animation.
 
 ## Layout
 
-- Mobile-first, one column, max-width 430px centered on web.
-- Safe-area insets respected (`env(safe-area-inset-bottom)`) on composers and floating buttons.
-- Spacing rhythm: 4/8/12/16/24/40; vary section gaps for rhythm, don't grid everything.
+- Mobile-first, one column, max-width 430px centered on web. Photos break the column (full-bleed to 430px edge).
+- Safe-area insets on composers and floating/sticky buttons.
+- Spacing rhythm: 4/8/12/16/24/40.
 
 ## Screens (canonical looks)
 
-- **Web profile** (`/p/`): light bg, photo leads, name in display weight, brand-red "Say hi 👋" pinned comfortable-thumb height, "via {wingperson}" vouch line under the pitch.
-- **Web chat** (`/c/`): light, airy; STOP hint in `--muted` under composer; ended state = centered quiet card, not an error.
-- **Invite gate** (friend-side): drenched brand red (see above).
-- **App roster/chats**: light utility screens, white cards on `--bg`.
-- **App deck (party mode)**: drenched `--night` plum; photo glows; `--champagne` accents allowed here only.
+- **Web profile** (`/p/`): full-bleed photo carousel with overlaid display name; dark body; vouch quote; sticky brand pill "Say hi 👋" with glow.
+- **Web chat** (`/c/`): dark, calm; STOP hint `--muted` 13px; ended state = centered quiet text.
+- **Invite gate** (friend-side): dark radial glow, "{Name} vouches for this" in ink, brand pill "Enter chat".
+- **App roster/chats**: dark utility, `--surface` cards; brand FAB + brand party-mode pill.
+- **App deck (party mode)**: deepest bg (`#100A13`), full-bleed hero photo with scrim + overlaid name (matches web /p/), champagne accents allowed here.

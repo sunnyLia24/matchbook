@@ -71,7 +71,7 @@ export default function SignIn() {
         <>
           <AppleAuthentication.AppleAuthenticationButton
             buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.WHITE}
             cornerRadius={radii.sm}
             style={s.apple}
             onPress={goApple}
@@ -84,12 +84,12 @@ export default function SignIn() {
         </>
       )}
       {mode === 'up' && (
-        <TextInput style={s.input} placeholder="Your name (shown on chat invites)" placeholderTextColor={colors.muted}
+        <TextInput style={s.input} placeholder="Your name (shown on chat invites)" placeholderTextColor={colors.muted} keyboardAppearance="dark"
           value={name} onChangeText={setName} />
       )}
-      <TextInput style={s.input} placeholder="Email" placeholderTextColor={colors.muted} autoCapitalize="none" keyboardType="email-address"
+      <TextInput style={s.input} placeholder="Email" placeholderTextColor={colors.muted} keyboardAppearance="dark" autoCapitalize="none" keyboardType="email-address"
         value={email} onChangeText={setEmail} />
-      <TextInput style={s.input} placeholder="Password" placeholderTextColor={colors.muted} secureTextEntry value={password} onChangeText={setPassword} />
+      <TextInput style={s.input} placeholder="Password" placeholderTextColor={colors.muted} keyboardAppearance="dark" secureTextEntry value={password} onChangeText={setPassword} />
       <Pressable style={({ pressed }) => [s.btn, pressed && s.btnPressed]} disabled={busy} onPress={go}>
         <Text style={s.btnText}>{mode === 'in' ? 'Sign in' : 'Create account'}</Text>
       </Pressable>
@@ -112,6 +112,6 @@ const s = StyleSheet.create({
            padding: 15, fontSize: 16, color: colors.ink },
   btn: { ...buttonBase, backgroundColor: colors.brand, marginTop: 6 },
   btnPressed: { backgroundColor: colors.brandDeep },
-  btnText: { color: colors.white, fontSize: 17, fontWeight: '600' },
+  btnText: { color: colors.onBrand, fontSize: 17, fontWeight: '700' },
   switch: { color: colors.brand, textAlign: 'center', marginTop: 14, fontSize: 15, paddingVertical: spacing.sm },
 });
