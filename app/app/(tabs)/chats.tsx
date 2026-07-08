@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
-import { FlatList, Pressable, RefreshControl, Share, StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
-import { WEB_BASE_URL } from '../../src/lib/config';
 import { ChatMeta } from '../../src/types';
 import { colors, radii, spacing, cardBase } from '../../src/theme';
 
 type Row = ChatMeta & { friendName: string };
 
 export default function Chats() {
+  const router = useRouter();
   const [rows, setRows] = useState<Row[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -24,8 +24,9 @@ export default function Chats() {
   };
   useFocusEffect(useCallback(() => { load(); }, []));
 
-  const forward = (r: Row) => Share.share({
-    message: `Someone met you through me and wants to chat 👀 Your private Matchbook link (type STOP anytime to end it): ${WEB_BASE_URL}/c/${r.friend_token}`,
+  const forward = (r: Row) => router.push({
+    pathname: '/suitor-card',
+    params: { chat: r.id, token: r.friend_token, name: r.friendName },
   });
 
   return (
@@ -58,9 +59,9 @@ const s = StyleSheet.create({
   card: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, ...cardBase, padding: 14 },
   name: { fontSize: 16, fontWeight: '800', letterSpacing: -0.2, color: colors.ink },
   meta: { color: colors.muted, fontSize: 12, marginTop: 2 },
-  fwd: { minHeight: 44, backgroundColor: colors.brand, borderRadius: radii.sm, paddingVertical: 9,
-         paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
+  fwd: { minHeight: 44, backgroundColor: colors.brand, borderRadius: radii.pill, paddingVertical: 9,
+         paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center' },
   fwdPressed: { backgroundColor: colors.brandDeep },
-  fwdText: { color: colors.white, fontWeight: '600', fontSize: 13 },
+  fwdText: { color: colors.onBrand, fontWeight: '700', fontSize: 13 },
   ended: { color: colors.muted, fontWeight: '600', fontSize: 12, textTransform: 'lowercase' },
 });
