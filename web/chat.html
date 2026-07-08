@@ -4,18 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#17101A">
 <title>Matchbook chat</title>
 <style>
   :root {
-    --brand: oklch(0.58 0.22 355);
-    --brand-deep: oklch(0.42 0.19 355);
-    --bg: oklch(0.975 0.005 355);
-    --surface: oklch(1 0 0);
-    --ink: oklch(0.24 0.02 355);
-    --muted: oklch(0.50 0.02 355);
-    --line: oklch(0.90 0.01 355);
-    --night: oklch(0.22 0.03 355);
-    --night-ink: oklch(0.96 0.01 355);
+    --bg: #17101A;
+    --surface: #221727;
+    --elevated: #2E1E33;
+    --ink: #F4EDF6;
+    --muted: #A891B5;
+    --line: #3A2941;
+    --brand: #FF2E63;
+    --brand-press: #D91E4F;
+    --on-brand: #23060F;
     --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   }
   * { box-sizing: border-box; margin: 0; }
@@ -35,7 +36,7 @@
     border-bottom: 1px solid var(--line);
     background: var(--bg);
   }
-  header b { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  header b { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
   header button {
     border: 0;
     background: none;
@@ -69,8 +70,9 @@
   .msg.me {
     background: var(--brand);
     border-color: var(--brand);
-    color: var(--surface);
+    color: var(--on-brand);
     align-self: flex-end;
+    font-weight: 500;
   }
   .sys { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 20px; }
   form {
@@ -91,6 +93,7 @@
     outline: none;
     min-height: 44px;
   }
+  input::placeholder { color: var(--muted); }
   input:focus { border-color: var(--brand); }
   form button {
     border: 0;
@@ -98,15 +101,15 @@
     padding: 0 20px;
     min-height: 44px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     background: var(--brand);
-    color: var(--surface);
+    color: var(--on-brand);
     transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
   }
-  form button:active { transform: scale(0.97); background: var(--brand-deep); }
+  form button:active { transform: scale(0.97); background: var(--brand-press); }
   .hint {
     text-align: center;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     padding: 0 12px 8px;
     background: var(--bg);
@@ -121,11 +124,13 @@
     margin: 0 auto;
   }
 
-  /* Invite / vouch gate — the drenched brand moment */
+  /* Invite / vouch gate — a dark room with a brand glow */
   .invite {
     position: fixed;
     inset: 0;
-    background: var(--brand);
+    background:
+      radial-gradient(80% 55% at 50% 28%, rgba(255, 46, 99, 0.22), transparent 70%),
+      var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,16 +145,16 @@
   }
   .inviteCard h2 {
     font-size: 30px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-weight: 900;
+    letter-spacing: -0.03em;
     text-wrap: balance;
     margin-top: 16px;
-    color: var(--surface);
+    color: var(--ink);
     opacity: 0;
     animation: fade-up 320ms var(--ease-out-quart) 40ms both;
   }
   .inviteCard p {
-    color: oklch(1 0 0 / 0.82);
+    color: var(--muted);
     margin-top: 14px;
     line-height: 1.5;
     font-size: 15px;
@@ -158,28 +163,46 @@
   }
   .inviteCard button {
     width: 100%;
-    min-height: 52px;
+    min-height: 54px;
     margin-top: 24px;
     padding: 15px;
     font-size: 17px;
-    font-weight: 600;
+    font-weight: 700;
     border: 0;
-    border-radius: 16px;
-    background: var(--surface);
-    color: var(--brand-deep);
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--on-brand);
+    box-shadow: 0 8px 28px rgba(255, 46, 99, 0.35);
     opacity: 0;
     animation: fade-up 320ms var(--ease-out-quart) 120ms both;
-    transition: transform 150ms var(--ease-out-quart);
+    transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
   }
-  .inviteCard button:active { transform: scale(0.98); }
+  .inviteCard button:active { transform: scale(0.98); background: var(--brand-press); }
   .inviteCard button.ghost {
     background: none;
-    color: oklch(1 0 0 / 0.75);
+    color: var(--muted);
     font-weight: 500;
     margin-top: 10px;
     min-height: 44px;
+    box-shadow: none;
     animation: fade-up 320ms var(--ease-out-quart) 160ms both;
   }
+  #sCard { display: contents; }
+  .sPhoto {
+    width: 148px; height: 185px; object-fit: cover; border-radius: 18px;
+    margin: 0 auto; display: block;
+    box-shadow: 0 10px 34px rgba(255, 46, 99, 0.3);
+    opacity: 0; animation: fade-up 320ms var(--ease-out-quart) 0ms both;
+  }
+  .sTags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin-top: 14px; opacity: 0; animation: fade-up 320ms var(--ease-out-quart) 60ms both; }
+  .sTag { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+    font-size: 13px; font-weight: 600; color: var(--ink); }
+  .sIg { display: inline-block; margin-top: 12px; color: var(--brand);
+    font-weight: 700; font-size: 15px; text-decoration: none;
+    opacity: 0; animation: fade-up 320ms var(--ease-out-quart) 90ms both; }
+  .ghostBtn { background: none; border: 0; color: var(--muted); font-size: 13px;
+    font-weight: 600; min-height: 44px; padding: 0 10px; }
   .hidden { display: none; }
 
   @keyframes rise-in {
@@ -195,7 +218,10 @@
     .inviteCard .emoji,
     .inviteCard h2,
     .inviteCard p,
-    .inviteCard button { animation: fade-in 1ms linear both; }
+    .inviteCard button,
+    .inviteCard .sPhoto,
+    .inviteCard .sTags,
+    .inviteCard .sIg { animation: fade-in 1ms linear both; }
     form button:active, .inviteCard button:active { transform: none; }
   }
   @keyframes fade-in {
@@ -208,13 +234,14 @@
 <div class="invite hidden" id="invite">
   <div class="inviteCard">
     <div class="emoji">💌</div>
+    <div id="sCard"></div>
     <h2 id="inviteTitle"></h2>
     <p>They met someone who'd like to chat with you. No accounts, no pressure — send "STOP" anytime and the chat ends for good.</p>
     <button id="enter">Enter chat</button>
     <button id="decline" class="ghost">Not interested</button>
   </div>
 </div>
-<header class="hidden" id="hdr"><b id="title"></b><button id="end">End chat</button></header>
+<header class="hidden" id="hdr"><b id="title"></b><button id="about" class="hidden ghostBtn"></button><button id="end">End chat</button></header>
 <div id="log" class="hidden"></div>
 <form id="composer" class="hidden" autocomplete="off">
   <input id="box" placeholder="Message…" maxlength="2000">
@@ -249,6 +276,37 @@
     if (channel) sb.removeChannel(channel);
   };
 
+  const IG_OK = (h) => typeof h === 'string' && /^[A-Za-z0-9._]{1,30}$/.test(h);
+  function renderCard(card) {
+    const wrap = $('sCard'); wrap.replaceChildren();
+    if (!card || typeof card !== 'object') return false;
+    let any = false;
+    if (typeof card.photo === 'string') {
+      const img = document.createElement('img');
+      img.className = 'sPhoto'; img.alt = '';
+      img.onerror = () => img.remove();
+      img.src = card.photo;
+      wrap.appendChild(img); any = true;
+    }
+    const tags = Array.isArray(card.tags) ? card.tags.filter((t) => typeof t === 'string') : [];
+    if (tags.length) {
+      const row = document.createElement('div'); row.className = 'sTags';
+      for (const t of tags) {
+        const c = document.createElement('span'); c.className = 'sTag';
+        c.textContent = t; row.appendChild(c);
+      }
+      wrap.appendChild(row); any = true;
+    }
+    if (IG_OK(card.ig)) {
+      const a = document.createElement('a'); a.className = 'sIg';
+      a.href = 'https://instagram.com/' + encodeURIComponent(card.ig);
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.textContent = '@' + card.ig;
+      wrap.appendChild(a); any = true;
+    }
+    return any || typeof card.name === 'string';
+  }
+
   async function load(first) {
     const { data: c, error } = await sb.rpc('get_chat', { p_token: token });
     if (error) return first && showState('Something went wrong — try again in a minute.');
@@ -261,9 +319,23 @@
     for (const id of ['hdr','log','composer','hint']) $(id).classList.remove('hidden');
     // friend-side intro gate: this is a vouched recommendation, entering is a choice
     const entered = sessionStorage.getItem('entered:' + token);
+    const suitorName = typeof c.suitor_card?.name === 'string' ? c.suitor_card.name : null;
+    const gateTitle = (c.wingperson_name || 'Your friend')
+      + ' vouches for ' + (suitorName || 'this');
+    const hasCard = c.role === 'friend' && renderCard(c.suitor_card);
     if (c.role === 'friend' && !entered && !c.messages.some((m) => m.sender === 'friend')) {
-      $('inviteTitle').textContent = (c.wingperson_name || 'Your friend') + ' vouches for this';
+      $('inviteTitle').textContent = gateTitle;
       $('invite').classList.remove('hidden');
+    }
+    if (hasCard) {
+      $('about').textContent = 'about ' + (suitorName || 'them');
+      $('about').classList.remove('hidden');
+      $('about').onclick = () => {
+        $('inviteTitle').textContent = gateTitle;
+        $('decline').classList.add('hidden');
+        $('enter').textContent = 'Back to chat';
+        $('invite').classList.remove('hidden');
+      };
     }
     if (first) {
       channel = sb.channel('chat:' + c.broadcast_key)
