@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Pressable, ScrollView, StyleSheet, Switch,
          Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../../src/lib/supabase';
-import { uploadPhoto } from '../../src/lib/photos';
+import { pickPhotoUri, uploadPhoto } from '../../src/lib/photos';
 import { Friend, Prompt } from '../../src/types';
 import { colors, radii, spacing, buttonBase, brandGlow } from '../../src/theme';
 
@@ -40,11 +39,10 @@ export default function FriendEditor() {
   const set = (patch: Partial<Friend>) => setF((p) => ({ ...p, ...patch }));
 
   const addPhoto = async () => {
-    const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7,
-      allowsEditing: true, aspect: [4, 5] });
-    if (r.canceled) return;
+    const uri = await pickPhotoUri();
+    if (!uri) return;
     setBusy(true);
-    try { set({ photos: [...(f.photos ?? []), await uploadPhoto(r.assets[0].uri)] }); }
+    try { set({ photos: [...(f.photos ?? []), await uploadPhoto(uri)] }); }
     catch (e: any) { Alert.alert('Upload failed', e.message); }
     setBusy(false);
   };

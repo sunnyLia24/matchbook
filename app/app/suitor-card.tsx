@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Pressable, ScrollView, Share, StyleSheet,
          Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../src/lib/supabase';
-import { uploadPhoto } from '../src/lib/photos';
+import { pickPhotoUri, uploadPhoto } from '../src/lib/photos';
 import { WEB_BASE_URL } from '../src/lib/config';
 import { SuitorCard } from '../src/types';
 import { colors, radii, spacing, buttonBase, brandGlow, cardBase } from '../src/theme';
@@ -39,11 +38,10 @@ export default function SuitorCardSheet() {
     setTags((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
 
   const pickPhoto = async () => {
-    const r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7,
-      allowsEditing: true, aspect: [4, 5] });
-    if (r.canceled) return;
+    const uri = await pickPhotoUri();
+    if (!uri) return;
     setBusy(true);
-    try { setPhoto(await uploadPhoto(r.assets[0].uri)); }
+    try { setPhoto(await uploadPhoto(uri)); }
     catch (e: any) { Alert.alert('Upload failed', e.message); }
     setBusy(false);
   };

@@ -52,7 +52,7 @@ plus `grant update (suitor_card), select (suitor_card) on public.chats to authen
 
 **Fields — all optional, in order:**
 
-1. **Photo** — one image via the existing `ImagePicker` + `uploadPhoto()` flow (0.7 quality, same `photos` bucket, owner's uid folder).
+1. **Photo** — one image, **taken on the spot or chosen from the library** (addendum 2026-07-08, approved): tapping the slot offers a native Take photo / Choose from library alert; both paths share `pickPhotoUri()` in `src/lib/photos.ts` (0.7 quality, 4:5 crop) and the existing `uploadPhoto()` flow (same `photos` bucket, owner's uid folder). The roster friend editor uses the same chooser. Camera requires the `expo-image-picker` config plugin permission strings in `app.json` — a native change, effective from the next EAS build.
 2. **First name** — plain text.
 3. **Instagram** — text field with a fixed `@` prefix rendered outside the value; stored without `@`. Client restricts input to the IG charset (server CHECK is the backstop).
 4. **Vouch chips** — wrap row of preset tags toggled by tap, brand voice, final list at implementation (~8–10; working set: `funny · has a good job · your type · tall · great style · good texter · friend of a friend · certified normal`), plus an **"add your own"** field that becomes one more chip. Selected chips use the neon-lipstick accent.

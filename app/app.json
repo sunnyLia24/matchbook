@@ -33,6 +33,13 @@
       "expo-router",
       "expo-apple-authentication",
       [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Matchbook uses your camera so you can snap the person your friend just met.",
+          "photosPermission": "Matchbook uses your photo library to add pictures to profiles and introductions."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#17101A",
