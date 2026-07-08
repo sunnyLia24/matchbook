@@ -57,6 +57,7 @@ export default function FriendEditor() {
       photos: f.photos ?? [], status: f.status, consented: f.consented,
       job: f.job?.trim() || null, height: f.height?.trim() || null,
       interests: interestsDraft.split(',').map((s) => s.trim()).filter(Boolean),
+      gender: f.gender ?? null,
     };
     const q = isNew
       ? supabase.from('friends').insert({ ...row, owner_id: (await supabase.auth.getUser()).data.user!.id })
@@ -93,6 +94,17 @@ export default function FriendEditor() {
           value={f.age ? String(f.age) : ''} onChangeText={(t) => set({ age: parseInt(t) || null })} />
         <TextInput style={[s.input, { flex: 2 }]} placeholder="City" placeholderTextColor={colors.muted} keyboardAppearance="dark" value={f.city ?? ''}
           onChangeText={(t) => set({ city: t })} />
+      </View>
+      <View style={s.rowBetween}>
+        <Text style={s.label}>Gender</Text>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          {(['guy', 'girl', 'nonbinary'] as const).map((g) => (
+            <Pressable key={g} style={[s.chip, f.gender === g && s.chipOn]}
+              onPress={() => set({ gender: f.gender === g ? null : g })}>
+              <Text style={f.gender === g ? s.chipOnText : s.chipText}>{g}</Text>
+            </Pressable>
+          ))}
+        </View>
       </View>
       <View style={{ flexDirection: 'row', gap: 12 }}>
         <TextInput style={[s.input, { flex: 2 }]} placeholder="Job" placeholderTextColor={colors.muted} keyboardAppearance="dark"
