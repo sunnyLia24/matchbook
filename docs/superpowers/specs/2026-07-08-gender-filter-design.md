@@ -16,7 +16,7 @@ Lia wants to find her guy friends and girl friends easily in the Matchbook mobil
 
 ## Data model
 
-New migration `backend/migrations/008_gender.sql`:
+New migration `backend/migrations/010_gender.sql`:
 
 ```sql
 alter table public.friends

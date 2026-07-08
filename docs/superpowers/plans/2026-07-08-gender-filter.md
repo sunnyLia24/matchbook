@@ -22,11 +22,11 @@
 
 ---
 
-### Task 1: Migration 008 — `gender` column + backend test
+### Task 1: Migration 010 — `gender` column + backend test
 
 **Files:**
 - Create: `backend/tests/06-gender.mjs`
-- Create: `backend/migrations/008_gender.sql`
+- Create: `backend/migrations/010_gender.sql`
 
 **Interfaces:**
 - Produces: `friends.gender` column (`text`, nullable, check-constrained to `guy|girl|nonbinary`) that Tasks 2–4 read and write. `get_profile()` is untouched.
@@ -90,7 +90,7 @@ Expected: FAIL on the first insert — `insert with gender failed: column "gende
 
 - [ ] **Step 3: Write the migration**
 
-Create `backend/migrations/008_gender.sql`:
+Create `backend/migrations/010_gender.sql`:
 
 ```sql
 -- Private organizing field for the wingperson. Deliberately NOT added to
@@ -112,7 +112,7 @@ Expected: `06-gender PASS`
 - [ ] **Step 6: Commit**
 
 ```bash
-git add backend/migrations/008_gender.sql backend/tests/06-gender.mjs
+git add backend/migrations/010_gender.sql backend/tests/06-gender.mjs
 git commit -m "feat: gender column on friends — private, check-constrained, excluded from get_profile"
 ```
 
