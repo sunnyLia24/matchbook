@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../src/lib/supabase';
@@ -17,6 +17,10 @@ export default function Roster() {
   };
   const [filter, setFilter] = useState<GenderFilter>('all');
   const hasEnby = friends.some((f) => f.gender === 'nonbinary');
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (filter === 'nonbinary' && !hasEnby) setFilter('all');
+  }, [filter, hasEnby]);
   const filters: GenderFilter[] = hasEnby ? ['all', 'guy', 'girl', 'nonbinary'] : ['all', 'guy', 'girl'];
   const shown = filter === 'all' ? friends : friends.filter((f) => f.gender === filter);
 
