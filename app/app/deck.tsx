@@ -9,6 +9,9 @@ import { colors, radii, buttonBase, brandGlow } from '../src/theme';
 
 const { width: W } = Dimensions.get('window');
 
+const share = (f: Friend) =>
+  Share.share({ message: `Meet ${f.first_name} 🔥 ${WEB_BASE_URL}/p/${f.share_slug}` });
+
 export default function Deck() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const router = useRouter();
@@ -20,9 +23,6 @@ export default function Deck() {
     q.order('created_at').then(({ data }) => setFriends((data as Friend[]) ?? []));
   }, [gender]);
 
-  const share = (f: Friend) =>
-    Share.share({ message: `Meet ${f.first_name} 🔥 ${WEB_BASE_URL}/p/${f.share_slug}` });
-
   return (
     <View style={s.wrap}>
       <FlatList
@@ -30,52 +30,56 @@ export default function Deck() {
         data={friends} keyExtractor={(f) => f.id}
         ListEmptyComponent={<View style={{ width: W, justifyContent: 'center' }}>
           <Text style={s.empty}>No live profiles — check status + consent.</Text></View>}
-        renderItem={({ item }) => (
-          <View style={s.card}>
-            {/* Full-bleed hero: photo edge-to-edge, name overlaid on a scrim (matches web /p/) */}
-            <View style={s.hero}>
-              {item.photos[0]
-                ? <Image source={{ uri: item.photos[0] }} style={s.photo} />
-                : <View style={[s.photo, s.noPhoto]}><Text style={{ fontSize: 60 }}>💘</Text></View>}
-              <LinearGradient
-                colors={['transparent', 'rgba(16,10,19,0.55)', colors.night]}
-                locations={[0, 0.55, 1]}
-                style={s.scrim}
-              />
-              <View style={s.id}>
-                <Text style={s.name}>
-                  {item.first_name}
-                  {item.age ? <Text style={s.age}>  {item.age}</Text> : null}
-                </Text>
-                {!!(item.city || item.job) && (
-                  <Text style={s.city}>{[item.city, item.job].filter(Boolean).join(' · ')}</Text>
-                )}
-              </View>
-            </View>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={s.body} showsVerticalScrollIndicator={false}>
-              {!!item.pitch && (
-                <View style={s.pitchWrap}>
-                  <Text style={s.quoteMark}>“</Text>
-                  <Text style={s.pitch}>{item.pitch}</Text>
-                </View>
-              )}
-              {(item.prompts ?? []).slice(0, 2).map((p) => (
-                <View key={p.q} style={s.prompt}>
-                  <Text style={s.q}>{p.q.toUpperCase()}</Text><Text style={s.a}>{p.a}</Text>
-                </View>
-              ))}
-            </ScrollView>
-            <View style={s.footer}>
-              <Pressable style={({ pressed }) => [s.share, pressed && s.sharePressed]} onPress={() => share(item)}>
-                <Text style={s.shareText}>Share {item.first_name}’s profile</Text>
-              </Pressable>
-            </View>
-          </View>
-        )}
+        renderItem={({ item }) => <DeckCard friend={item} />}
       />
       <Pressable style={({ pressed }) => [s.close, pressed && s.closePressed]} onPress={() => router.back()} hitSlop={8}>
         <Text style={s.closeText}>✕</Text>
       </Pressable>
+    </View>
+  );
+}
+
+function DeckCard({ friend }: { friend: Friend }) {
+  return (
+    <View style={s.card}>
+      {/* Full-bleed hero: photo edge-to-edge, name overlaid on a scrim (matches web /p/) */}
+      <View style={s.hero}>
+        {friend.photos[0]
+          ? <Image source={{ uri: friend.photos[0] }} style={s.photo} />
+          : <View style={[s.photo, s.noPhoto]}><Text style={{ fontSize: 60 }}>💘</Text></View>}
+        <LinearGradient
+          colors={['transparent', 'rgba(16,10,19,0.55)', colors.night]}
+          locations={[0, 0.55, 1]}
+          style={s.scrim}
+        />
+        <View style={s.id}>
+          <Text style={s.name}>
+            {friend.first_name}
+            {friend.age ? <Text style={s.age}>  {friend.age}</Text> : null}
+          </Text>
+          {!!(friend.city || friend.job) && (
+            <Text style={s.city}>{[friend.city, friend.job].filter(Boolean).join(' · ')}</Text>
+          )}
+        </View>
+      </View>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.body} showsVerticalScrollIndicator={false}>
+        {!!friend.pitch && (
+          <View style={s.pitchWrap}>
+            <Text style={s.quoteMark}>“</Text>
+            <Text style={s.pitch}>{friend.pitch}</Text>
+          </View>
+        )}
+        {(friend.prompts ?? []).slice(0, 2).map((p) => (
+          <View key={p.q} style={s.prompt}>
+            <Text style={s.q}>{p.q.toUpperCase()}</Text><Text style={s.a}>{p.a}</Text>
+          </View>
+        ))}
+      </ScrollView>
+      <View style={s.footer}>
+        <Pressable style={({ pressed }) => [s.share, pressed && s.sharePressed]} onPress={() => share(friend)}>
+          <Text style={s.shareText}>Share {friend.first_name}’s profile</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
