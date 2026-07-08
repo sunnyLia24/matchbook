@@ -48,31 +48,34 @@ export default function SuitorCardSheet() {
     setBusy(false);
   };
 
-  // Forwarding the link is the sacred path: a failed save never blocks the share.
+  // Forwarding the link is the sacred path: a failed save never blocks the share,
+  // and the finally guarantees the sheet can't be left stuck with disabled buttons.
   const share = async (withCard: boolean) => {
     setSharing(true);
-    if (withCard) {
-      const card: SuitorCard = {};
-      if (photo) card.photo = photo;
-      if (suitorName.trim()) card.name = suitorName.trim();
-      const handle = ig.trim().replace(/^@/, '');
-      if (handle && !IG_RE.test(handle)) {
-        setSharing(false);
-        return Alert.alert('That Instagram handle doesn’t look right',
-          'Letters, numbers, dots and underscores only.');
+    try {
+      if (withCard) {
+        const card: SuitorCard = {};
+        if (photo) card.photo = photo;
+        if (suitorName.trim()) card.name = suitorName.trim();
+        const handle = ig.trim().replace(/^@/, '');
+        if (handle && !IG_RE.test(handle)) {
+          return Alert.alert('That Instagram handle doesn’t look right',
+            'Letters, numbers, dots and underscores only.');
+        }
+        if (handle) card.ig = handle;
+        const all = [...new Set([...tags, customTag.trim()].filter(Boolean))];
+        if (all.length) card.tags = all;
+        const { error } = await supabase.from('chats')
+          .update({ suitor_card: Object.keys(card).length ? card : null }).eq('id', chat);
+        if (error) Alert.alert('Card didn’t save', `${error.message}\nSharing the link anyway.`);
       }
-      if (handle) card.ig = handle;
-      const all = [...new Set([...tags, customTag.trim()].filter(Boolean))];
-      if (all.length) card.tags = all;
-      const { error } = await supabase.from('chats')
-        .update({ suitor_card: Object.keys(card).length ? card : null }).eq('id', chat);
-      if (error) Alert.alert('Card didn’t save', `${error.message}\nSharing the link anyway.`);
+      await Share.share({
+        message: `Someone met you through me and wants to chat 👀 Your private Matchbook link (type STOP anytime to end it): ${WEB_BASE_URL}/c/${token}`,
+      });
+      router.back();
+    } finally {
+      setSharing(false);
     }
-    await Share.share({
-      message: `Someone met you through me and wants to chat 👀 Your private Matchbook link (type STOP anytime to end it): ${WEB_BASE_URL}/c/${token}`,
-    });
-    setSharing(false);
-    router.back();
   };
 
   return (

@@ -73,12 +73,18 @@ const BAD = [
   ['foreign photo origin', { photo: 'https://evil.example/pixel.jpg' }],
   ['javascript photo', { photo: 'javascript:alert(1)' }],
   ['oversize', { name: 'x'.repeat(2100) }],
+  ['name too long', { name: 'x'.repeat(51) }],
+  ['photo path traversal', { photo: `${PHOTO_PREFIX}../avatars/steal.jpg` }],
 ];
 for (const [label, card] of BAD) {
   ({ error } = await setCard(owner, t.id, card));
   assert(error, `constraint must reject: ${label}`);
 }
 assert.deepStrictEqual(await readCard(t.id), VALID, 'a bad payload landed');
+
+// 6b. boundary: a 50-char name is still accepted
+({ error } = await setCard(owner, t.id, { name: 'x'.repeat(50) }));
+assert(!error, `50-char name must be accepted: ${error?.message}`);
 
 // 7. clearing the card works; ended chats are immutable
 ({ error } = await setCard(owner, t.id, null));
