@@ -125,6 +125,17 @@ Open the friend link on a chat with a card.
 reopens the card. A chat without a card shows today's plain gate. The guest side never
 shows any of it (and `get_chat` for the guest token has no `suitor_card` key).
 
+## 14. Party deck photo carousel (app)
+In the app, open **🎉 Party mode** with at least one friend who has 2+ photos.
+**Expected:**
+- [ ] Friend with 4 photos: 4 segment bars over the photo; tapping the right half cycles
+      1→2→3→4→1, left half goes back and wraps 1→4; the champagne bar tracks the visible photo.
+- [ ] Friend with 1 photo / no photos: no bars, photo doesn't respond to taps; 💘
+      placeholder unchanged.
+- [ ] Horizontal swipe still pages between friends; vertical scroll of pitch/prompts still
+      works; the ✕ close button still closes (right tap zone sits underneath it).
+- [ ] Tapping directly on the name overlay still advances the photo.
+
 ## Sign in with Apple (TestFlight build required — does not work in Expo Go/simulator)
 
 - [ ] Apple button (black, native) shows above the email form with an "or" divider

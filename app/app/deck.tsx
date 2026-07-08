@@ -40,19 +40,36 @@ export default function Deck() {
 }
 
 function DeckCard({ friend }: { friend: Friend }) {
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const photos = friend.photos ?? [];
+  const step = (d: number) => setPhotoIndex((i) => (i + d + photos.length) % photos.length);
+
   return (
     <View style={s.card}>
-      {/* Full-bleed hero: photo edge-to-edge, name overlaid on a scrim (matches web /p/) */}
+      {/* Full-bleed hero: photo edge-to-edge, name overlaid on a scrim (matches web /p/).
+          2+ photos: stories-style tap zones (right = next, left = back) + segment bars —
+          taps, not swipes, so the outer FlatList keeps horizontal paging between friends. */}
       <View style={s.hero}>
-        {friend.photos[0]
-          ? <Image source={{ uri: friend.photos[0] }} style={s.photo} />
+        {photos[photoIndex]
+          ? <Image source={{ uri: photos[photoIndex] }} style={s.photo} />
           : <View style={[s.photo, s.noPhoto]}><Text style={{ fontSize: 60 }}>💘</Text></View>}
         <LinearGradient
           colors={['transparent', 'rgba(16,10,19,0.55)', colors.night]}
           locations={[0, 0.55, 1]}
           style={s.scrim}
         />
-        <View style={s.id}>
+        {photos.length > 1 && (
+          <>
+            <Pressable style={[s.tapZone, { left: 0 }]} onPress={() => step(-1)} />
+            <Pressable style={[s.tapZone, { right: 0 }]} onPress={() => step(1)} />
+            <View style={s.segs}>
+              {photos.map((url, i) => (
+                <View key={url} style={[s.seg, i === photoIndex && s.segOn]} />
+              ))}
+            </View>
+          </>
+        )}
+        <View style={s.id} pointerEvents="none">
           <Text style={s.name}>
             {friend.first_name}
             {friend.age ? <Text style={s.age}>  {friend.age}</Text> : null}
@@ -90,6 +107,10 @@ const s = StyleSheet.create({
   hero: { width: W },
   photo: { width: W, aspectRatio: 4 / 5, backgroundColor: colors.nightElevated },
   noPhoto: { alignItems: 'center', justifyContent: 'center' },
+  tapZone: { position: 'absolute', top: 0, bottom: 0, width: '50%' },
+  segs: { position: 'absolute', top: 60, left: 16, right: 74, flexDirection: 'row', gap: 5 },
+  seg: { flex: 1, height: 3, borderRadius: 2, backgroundColor: 'rgba(244,237,246,0.28)' },
+  segOn: { backgroundColor: colors.champagne },
   scrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '45%' },
   id: { position: 'absolute', left: 20, right: 20, bottom: 12 },
   name: { color: colors.nightInk, fontSize: 38, fontWeight: '900', letterSpacing: -1 },
