@@ -32,6 +32,8 @@ export default function RootLayout() {
         headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, headerShadowVisible: false }} />
       <Stack.Screen name="suitor-card" options={{ headerShown: true, title: '', presentation: 'modal',
         headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, headerShadowVisible: false }} />
+      <Stack.Screen name="settings" options={{ headerShown: true, title: 'Settings', presentation: 'modal',
+        headerStyle: { backgroundColor: colors.bg }, headerTintColor: colors.ink, headerShadowVisible: false }} />
       <Stack.Screen name="deck" options={{ animation: 'fade' }} />
     </Stack>
   );

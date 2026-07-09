@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { supabase } from '../../src/lib/supabase';
+import { WEB_BASE_URL } from '../../src/lib/config';
 import { colors, radii, spacing, buttonBase } from '../../src/theme';
 
 export default function SignIn() {
@@ -96,6 +97,12 @@ export default function SignIn() {
       <Pressable onPress={() => setMode(mode === 'in' ? 'up' : 'in')} hitSlop={8}>
         <Text style={s.switch}>{mode === 'in' ? 'New here? Create an account' : 'Have an account? Sign in'}</Text>
       </Pressable>
+      <Text style={s.legal}>
+        By continuing you agree to our{' '}
+        <Text style={s.legalLink} onPress={() => Linking.openURL(`${WEB_BASE_URL}/terms`)}>Terms</Text>
+        {' '}and{' '}
+        <Text style={s.legalLink} onPress={() => Linking.openURL(`${WEB_BASE_URL}/privacy`)}>Privacy Policy</Text>.
+      </Text>
     </KeyboardAvoidingView>
   );
 }
@@ -114,4 +121,6 @@ const s = StyleSheet.create({
   btnPressed: { backgroundColor: colors.brandDeep },
   btnText: { color: colors.onBrand, fontSize: 17, fontWeight: '700' },
   switch: { color: colors.brand, textAlign: 'center', marginTop: 14, fontSize: 15, paddingVertical: spacing.sm },
+  legal: { color: colors.muted, textAlign: 'center', fontSize: 13, lineHeight: 19, marginTop: 4 },
+  legalLink: { color: colors.muted, fontWeight: '700', textDecorationLine: 'underline' },
 });
