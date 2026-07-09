@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17101A">
+<meta name="description" content="Matchbook privacy policy — what we collect, why, and how to delete it.">
+<title>Privacy Policy · Matchbook</title>
+<style>
+  :root {
+    --bg: #17101A;
+    --surface: #221727;
+    --elevated: #2E1E33;
+    --ink: #F4EDF6;
+    --muted: #A891B5;
+    --line: #3A2941;
+    --brand: #FF2E63;
+    --champagne: #E3C08D;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100dvh;
+  }
+  .page {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    animation: rise-in 380ms var(--ease-out-quart) both;
+  }
+  .mark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--champagne);
+    text-decoration: none;
+    display: inline-block;
+  }
+  h1 {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+    margin-top: 14px;
+  }
+  .meta { color: var(--muted); font-size: 14px; margin-top: 8px; }
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-top: 36px;
+    text-wrap: balance;
+  }
+  p, li { font-size: 16px; line-height: 1.6; margin-top: 12px; max-width: 70ch; }
+  ul { padding-left: 22px; }
+  li { margin-top: 8px; }
+  li::marker { color: var(--brand); }
+  a { color: var(--brand); font-weight: 600; text-decoration: none; }
+  a:active { opacity: 0.8; }
+  strong { font-weight: 700; }
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+  footer a { color: var(--muted); font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; }
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .page { animation: fade-in 1ms linear both; }
+  }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="mark" href="/">Matchbook</a>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Effective July 9, 2026</p>
+
+  <p>Matchbook is a wingperson app: people with accounts (“wingpeople”) create profiles
+  for their single friends and make introductions. This policy explains what we collect
+  from each kind of person who touches Matchbook, why, and how to get it deleted.
+  The short version: we collect the minimum needed to make introductions work, we don’t
+  run ads, and we don’t sell or share your data with advertisers or data brokers.</p>
+
+  <h2>If you have a Matchbook account (wingpeople)</h2>
+  <ul>
+    <li><strong>Account info:</strong> your email address and password, or your Apple ID
+    credential if you use Sign in with Apple, plus the display name you choose. Your
+    display name is shown to people you introduce (“Lia vouches for this”).</li>
+    <li><strong>Your roster:</strong> the profiles you build: names, ages, photos,
+    and everything else you write about your friends.</li>
+    <li><strong>Push token:</strong> a device token so we can notify you when someone
+    wants to meet one of your friends. It’s optional; deny the permission and everything
+    still works.</li>
+  </ul>
+
+  <h2>If a friend put you on their roster (singles)</h2>
+  <p>Profiles are created by your friend, and Matchbook only serves a profile after your
+  friend confirms you know you’re on it. Your profile page is reachable only by an
+  unguessable secret link that your friend chooses who to share with. It is never listed,
+  searchable, or indexed. If you want off anyway,
+  <a href="/support">tell us</a> and we’ll remove the profile, or ask your friend to
+  delete it (removal is instant and also permanently ends any chats).</p>
+
+  <h2>If you’re chatting (guests and singles)</h2>
+  <p>Chats are account-free. We store the messages you send so the other person can read
+  them, and nothing else about you: no name, no phone number, no account. Access is
+  through your secret link alone. Either person can type STOP (or tap End chat) to end
+  the chat permanently. The wingperson who made the introduction can never read your
+  messages.</p>
+
+  <h2>What we don’t do</h2>
+  <ul>
+    <li>No ads, no ad tracking, no analytics trackers, no fingerprinting.</li>
+    <li>No selling or renting data to anyone, ever.</li>
+    <li>No scanning your contacts, location, or anything else on your device.</li>
+  </ul>
+
+  <h2>Where your data lives</h2>
+  <p>Data is stored with <strong>Supabase</strong> (database, authentication, and photo
+  storage) and the web pages are served by <strong>Netlify</strong>. Push notifications
+  are delivered through <strong>Expo</strong> and <strong>Apple</strong>. These providers
+  process data on our behalf and can’t use it for their own purposes.</p>
+
+  <h2>Deleting your data</h2>
+  <ul>
+    <li><strong>Wingpeople:</strong> Settings → Delete account, inside the app. This
+    permanently deletes your account, every profile you created, all photos, and every
+    chat and message tied to them. It cannot be undone.</li>
+    <li><strong>Singles:</strong> ask your friend to remove your profile, or
+    <a href="/support">contact us</a> and we’ll take it down.</li>
+    <li><strong>Chat participants:</strong> type STOP to end a chat permanently.
+    To have a chat’s contents erased, <a href="/support">contact us</a> with your
+    chat link.</li>
+  </ul>
+
+  <h2>Age</h2>
+  <p>Matchbook is for adults. You must be 18 or older to create an account, and every
+  profile on a roster must be of someone 18 or older.</p>
+
+  <h2>Your rights</h2>
+  <p>Depending on where you live (for example the EU or California), you may have rights
+  to access, correct, export, or erase your personal data. Email us and we’ll honor
+  them, no forms, no fuss.</p>
+
+  <h2>Changes & contact</h2>
+  <p>If this policy changes materially, we’ll note it here with a new effective date.
+  Questions or requests: <a href="mailto:cutiechoi@gmail.com">cutiechoi@gmail.com</a>.</p>
+
+  <footer>
+    <a href="/terms">Terms of Use</a>
+    <a href="/support">Support</a>
+    <a href="/">matchbook</a>
+  </footer>
+</div>
+</body>
+</html>

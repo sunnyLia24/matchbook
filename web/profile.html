@@ -139,6 +139,18 @@
   }
   .prompt .a { margin-top: 4px; font-size: 17px; line-height: 1.45; }
   .looking { margin-top: 16px; color: var(--muted); font-size: 15px; }
+  .report {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    background: none;
+    border: 0;
+    padding: 0;
+  }
   .cta {
     position: fixed;
     left: 50%;
@@ -205,6 +217,7 @@
     <div class="chips" id="interests"></div>
     <div id="prompts"></div>
     <div class="looking" id="looking"></div>
+    <button class="report" id="report">Something wrong? Report this profile</button>
   </div>
   <div class="cta"><button id="sayhi">Say hi 👋</button></div>
 </div>
@@ -241,6 +254,14 @@
     if (p.looking_for) $('looking').textContent = 'Looking for: ' + p.looking_for;
     $('card').classList.remove('hidden');
   }
+
+  $('report').addEventListener('click', async () => {
+    const reason = (window.prompt('Tell us what’s wrong with this profile:') || '').trim();
+    if (!reason) return;
+    const { error } = await sb.rpc('report_profile', { p_slug: slug, p_reason: reason.slice(0, 500) });
+    alert(error ? 'That didn’t go through — try again in a minute.'
+                : 'Thank you. We review every report within 24 hours.');
+  });
 
   $('sayhi').addEventListener('click', async () => {
     $('sayhi').disabled = true; $('sayhi').textContent = 'Opening chat…';

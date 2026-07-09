@@ -241,7 +241,7 @@
     <button id="decline" class="ghost">Not interested</button>
   </div>
 </div>
-<header class="hidden" id="hdr"><b id="title"></b><button id="about" class="hidden ghostBtn"></button><button id="end">End chat</button></header>
+<header class="hidden" id="hdr"><b id="title"></b><button id="about" class="hidden ghostBtn"></button><button id="report" class="ghostBtn">Report</button><button id="end">End chat</button></header>
 <div id="log" class="hidden"></div>
 <form id="composer" class="hidden" autocomplete="off">
   <input id="box" placeholder="Message…" maxlength="2000">
@@ -356,6 +356,15 @@
     if (!r?.ok) { if (r?.error === 'ended') showEnded(); return; }
     // own messages render locally; server broadcasts echo to everyone, so the handler skips own-sender payloads
     if (!r.ended) addMsg({ sender: role, body });
+  });
+
+  // stays available after a chat ends — the transcript is still visible
+  $('report').addEventListener('click', async () => {
+    const reason = (window.prompt('Tell us what’s wrong in this chat:') || '').trim();
+    if (!reason) return;
+    const { error } = await sb.rpc('report_chat', { p_token: token, p_reason: reason.slice(0, 500) });
+    alert(error ? 'That didn’t go through — try again in a minute.'
+                : 'Thank you. We review every report within 24 hours.');
   });
 
   $('end').addEventListener('click', async () => {

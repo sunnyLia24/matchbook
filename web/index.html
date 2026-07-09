@@ -102,6 +102,15 @@
   }
   .safety b { color: var(--ink); font-weight: 600; }
   footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  .legal { margin-top: 14px; display: flex; justify-content: center; gap: 20px; }
+  .legal a {
+    color: var(--muted);
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
   .fade { opacity: 0; animation: fade-up 420ms var(--ease-out-quart) both; }
   .d1 { animation-delay: 40ms; } .d2 { animation-delay: 80ms; }
   .d3 { animation-delay: 120ms; } .d4 { animation-delay: 160ms; }
@@ -147,7 +156,14 @@
 
   <p class="safety fade d4">Every chat is private and consent-first. <b>Either person can type STOP</b> to permanently end it, anytime.</p>
 
-  <footer class="fade d4">Profiles are shared by invitation only — ask your wingperson for the link.</footer>
+  <footer class="fade d4">
+    Profiles are shared by invitation only — ask your wingperson for the link.
+    <nav class="legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/support">Support</a>
+    </nav>
+  </footer>
 </div>
 </body>
 </html>
