@@ -54,9 +54,11 @@ current app and defines the missing pieces.
 - **Deletion is a SQL function, not an edge function.** `delete from
   auth.users where id = auth.uid()` inside a `security definer` function owned
   by `postgres` is the standard Supabase pattern; every table already cascades
-  from `auth.users`. Storage: deleting the user's `storage.objects` rows makes
-  every photo URL 404 immediately (public URL serving resolves through that
-  table). No service-role key ever ships in the app.
+  from `auth.users`. No service-role key ever ships in the app.
+  *(Amended 2026-07-09 during rollout: Supabase's storage layer rejects direct
+  SQL deletes on `storage.objects`, so the client purges its own photo folder
+  through the Storage API — owner list/delete policies from migration 004 —
+  before calling `delete_account()`. Migration 012.)*
 - **Reports are write-only for the public.** RLS enabled with no select
   policies; inserts happen only through the two RPCs (reason length-capped,
   slug/token must resolve, no existence oracle — unknown slug/token is a

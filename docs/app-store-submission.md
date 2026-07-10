@@ -6,20 +6,19 @@ Code-side requirements are implemented (spec:
 covers the two pending pushes and the App Store Connect console work only Lia
 can do.
 
-## 0. Pending pushes (blocked in the autonomous session)
+## 0. Pending pushes
 
-Both were built and verified locally but a production push needs your go-ahead:
+✅ **Migrations 011 + 012 applied** (2026-07-09) and verified: backend suites
+01–07 all pass against production. Note: `delete_account()` deletes the auth
+user only — the app purges the user's photo folder through the Storage API
+first, because Supabase blocks SQL deletes on `storage.objects` (012).
 
-1. **Apply migration 011** to Supabase (`backend/migrations/011_account_deletion_reports.sql`):
-   paste it into the SQL editor of project `gyhqbnyuufntgdmowrbi`, or ask Claude
-   to apply it in a session where you approve the write. Then verify:
-   `cd backend/tests && NODE_OPTIONS=--experimental-websocket node 07-account-and-reports.mjs`
-2. **Deploy `web/` to Netlify** (site `matchbook-party`). This publishes
-   `/privacy`, `/terms`, `/support`, and the Report actions. Without it the
-   in-app links 404 and the ASC URLs below are dead.
-
-Order matters: apply the migration before deploying the web changes, because
-the deployed pages call `report_profile` / `report_chat`.
+⬜ **Deploy `web/` to Netlify** (site `matchbook-party`) — the one remaining
+push; the harness blocks it from an autonomous session. Either drag the `web`
+folder onto app.netlify.com → matchbook-party → Deploys (the Dear Date
+workflow), or run `npx netlify-cli deploy --dir web --prod` from the repo
+root. This publishes `/privacy`, `/terms`, `/support`, and the Report
+actions; until then the in-app links 404 and the ASC URLs below are dead.
 
 ## 1. Build & submit
 

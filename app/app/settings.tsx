@@ -36,8 +36,9 @@ export default function Settings() {
 
   const signOut = () => supabase.auth.signOut();
 
-  // Deleting the auth user server-side cascades roster, photos, and chats;
-  // the local signOut just clears the now-orphaned session.
+  // Photos must go through the Storage API (storage.objects can't be deleted
+  // from SQL), so the client purges its own folder before delete_account()
+  // removes the auth user and cascades roster, chats, and messages.
   const deleteAccount = () => Alert.prompt(
     'Delete your account?',
     'Your roster, photos, and every chat disappear permanently. Type DELETE to confirm.',
@@ -48,10 +49,19 @@ export default function Settings() {
           return Alert.alert('Not deleted', 'Type DELETE to confirm — it’s permanent.');
         }
         setBusy(true);
-        const { error } = await supabase.rpc('delete_account');
-        setBusy(false);
-        if (error) return Alert.alert('That didn’t work', error.message);
-        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+          const { data: files } = await supabase.storage.from('photos').list(user.id, { limit: 1000 });
+          if (files?.length) {
+            await supabase.storage.from('photos').remove(files.map((f) => `${user.id}/${f.name}`));
+          }
+          const { error } = await supabase.rpc('delete_account');
+          if (error) return Alert.alert('That didn’t work', error.message);
+          await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        } finally {
+          setBusy(false);
+        }
       } },
     ],
     'plain-text',

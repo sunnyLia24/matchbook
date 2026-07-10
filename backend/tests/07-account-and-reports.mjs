@@ -43,7 +43,14 @@ const visitor = anon();
   const { error: anonDel } = await visitor.rpc('delete_account');
   assert(anonDel, 'delete_account must fail for anonymous callers');
 
-  // the owner deletes their account
+  // the owner deletes their account — same two-step flow as the app:
+  // purge own photos via the Storage API, then delete_account()
+  const { data: files } = await owner.storage.from('photos').list(uid, { limit: 1000 });
+  assert(files?.length === 1, 'owner should see their uploaded photo');
+  const { data: removed, error: rmErr } = await owner.storage.from('photos')
+    .remove(files.map((f) => `${uid}/${f.name}`));
+  assert(!rmErr, `photo purge: ${rmErr?.message}`);
+  assert(removed?.length === 1, 'storage must confirm the object was removed (RLS can filter silently)');
   const { error: delErr } = await owner.rpc('delete_account');
   assert(!delErr, `delete_account: ${delErr?.message}`);
 
@@ -56,7 +63,9 @@ const visitor = anon();
   const { data: deadChat } = await visitor.rpc('get_chat', { p_token: chat.guest_token });
   assert(deadChat === null, 'chat link must go dead after account deletion');
 
-  const photoAfter = await fetch(photoUrl);
+  // cache-bust: the public-object CDN may keep serving the exact URL it
+  // already cached, but the object itself is gone
+  const photoAfter = await fetch(photoUrl + '?cachebust=' + rand());
   assert(!photoAfter.ok, `photo must 404 after deletion (got ${photoAfter.status})`);
 
   console.log('delete_account ✓');
