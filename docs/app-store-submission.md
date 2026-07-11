@@ -83,11 +83,26 @@ SDKs, no advertising data.
 
 ## 6. Screenshots & description
 
-✅ Description pushed via metadata. Five 6.9" screenshots (1320×2868, captured
-from the real Release build on an iPhone 17 Pro Max simulator, demo-account
-data) are in `app/store-assets/` — drag them into ASC → App Store tab → iPhone
-6.9" Display (EAS Metadata can't upload screenshots). Order: roster, party
-deck, suitor card, chats, settings.
+✅ Description pushed via metadata. Screenshots captured from the real Release
+build on an iPhone 17 Pro Max simulator with demo-account data, in
+`app/store-assets/`:
+- `*-65.png` = **1284×2778 (6.5")** — this app's version page shows a 6.5"
+  screenshot well, so these are the ones to upload.
+- `NN-*.png` (no suffix) = 1320×2868 (6.9") originals, kept for reference.
+
+⬜ **Only remaining submission blocker:** drag the five `*-65.png` files into
+ASC → the iPhone screenshot well (order: roster, deck, suitor, chats,
+settings). EAS Metadata and browser automation can't transport local files
+into the ASC uploader, so this drag is manual. Then click **Add for Review**.
+
+Everything else on the version is done: build 1.0.0 (7) attached, pricing
+(Free, all regions), Content Rights ("no third-party content"), App Privacy
+labels published, and App Review contact + demo account. Apple's pre-submit
+validation now lists **only** the screenshot as outstanding.
+
+Note: a blue banner asks to answer new "social media" age-rating questions in
+App Information by **Sept 7, 2026** — informational, not a blocker for this
+submission.
 
 ## 7. Compliance already handled in the binary
 
