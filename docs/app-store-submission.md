@@ -13,12 +13,9 @@ can do.
 user only — the app purges the user's photo folder through the Storage API
 first, because Supabase blocks SQL deletes on `storage.objects` (012).
 
-⬜ **Deploy `web/` to Netlify** (site `matchbook-party`) — the one remaining
-push; the harness blocks it from an autonomous session. Either drag the `web`
-folder onto app.netlify.com → matchbook-party → Deploys (the Dear Date
-workflow), or run `npx netlify-cli deploy --dir web --prod` from the repo
-root. This publishes `/privacy`, `/terms`, `/support`, and the Report
-actions; until then the in-app links 404 and the ASC URLs below are dead.
+✅ **Web deployed** (2026-07-09, Lia drag-and-drop): `/privacy`, `/terms`,
+`/support` serve 200 with clean URLs, and the Report actions are live on the
+profile and chat pages. Every URL in section 2 resolves.
 
 ## 1. Build & submit
 
