@@ -60,6 +60,16 @@
       "messagingAndChat": true,
       "parentalControls": false,
       "userGeneratedContent": true
+    },
+    "review": {
+      "firstName": "Lia",
+      "lastName": "Choi",
+      "email": "cutiechoi@gmail.com",
+      "phone": "+12012203522",
+      "demoUsername": "appreview@matchbook-demo.com",
+      "demoPassword": "Matchbook-Review-2026!",
+      "demoRequired": true,
+      "notes": "Matchbook is a 'wingperson' app: the signed-in user keeps profiles of their single friends (with the friend's consent — profiles are only served after the consent toggle is on) and shares a private profile link with people they meet. Recipients view the profile and chat with the friend on the web, account-free.\n\nTo test the full loop: sign in with the demo account → tap Jenny → her profile link is shareable from Party mode or the share action → open that link in Safari → tap 'Say hi' → a chat opens. Back in the app, the Chats tab shows the new chat with a Forward button that produces the friend-side link with an optional vouch card. Either chat participant can type STOP or tap End chat to permanently end the conversation. Both web surfaces (profile and chat) have Report actions.\n\nAccount deletion: gear icon (top right) → Delete account → type DELETE to confirm."
     }
   }
 }
