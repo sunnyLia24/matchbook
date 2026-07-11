@@ -19,31 +19,30 @@ profile and chat pages. Every URL in section 2 resolves.
 
 ## 1. Build & submit
 
+✅ **Build 1.0.0 (7) built and uploaded to App Store Connect** (2026-07-11);
+Apple processes it into TestFlight/the release picker within minutes. For
+future versions:
+
 ```sh
 cd app
 eas build --profile production --platform ios
 eas submit --profile production --platform ios   # ascAppId 6788095749 is pinned
 ```
 
-Version 1.0.0; build numbers auto-increment remotely.
-
 ## 2. App Store Connect — App Information
 
-| Field | Value |
-|---|---|
-| Name | Matchbook |
-| Subtitle | Your friends' wingperson |
-| Category | Social Networking (secondary: Lifestyle) |
-| Privacy Policy URL | https://matchbook-party.netlify.app/privacy |
-| Support URL | https://matchbook-party.netlify.app/support |
-| Marketing URL | https://matchbook-party.netlify.app |
+✅ **Synced automatically via EAS Metadata** (2026-07-11, `app/store.config.json`
++ `eas metadata:push`): name **"Matchbook: Wingperson"** (plain "Matchbook" is
+taken by another developer — rename in ASC if you prefer something else),
+subtitle, description, keywords, categories, all three URLs, and the age
+rating declaration (messaging/chat ✓, UGC ✓, infrequent/mild mature themes).
+To change store copy later: edit `store.config.json`, run
+`npx eas-cli metadata:push --profile production`.
 
 ## 3. Age rating questionnaire
 
-Answer **Yes** to "Dating" (the app facilitates romantic introductions) and
-**None/No** to gambling, violence, medical, unrestricted web access, and user
-location. Dating forces the 17+/18+ tier — accept it; dating apps cannot ship
-lower and Apple rejects attempts to dodge it.
+✅ Declared via metadata push (see above). Double-check the computed rating in
+ASC looks right for a dating-adjacent app before submitting.
 
 ## 4. App Privacy (nutrition labels)
 
@@ -62,7 +61,13 @@ SDKs, no advertising data.
 ## 5. App Review Information
 
 - **Demo account:** `appreview@matchbook-demo.com` / `Matchbook-Review-2026!`
-  (already seeded with two consented profiles, Jenny and Marcus).
+  (seeded with two consented profiles — Jenny and Marcus, with photos — and a
+  pending chat).
+- ⚠️ Couldn't push App Review contact info automatically: ASC requires a
+  **phone number**. Either fill the review block into `store.config.json`
+  (fields: firstName, lastName, email, phone, demoUsername, demoPassword,
+  demoRequired, notes — content below) and re-run `eas metadata:push`, or
+  paste it in ASC → App Review Information.
 - **Notes for the reviewer** (paste as-is):
 
 > Matchbook is a "wingperson" app: the signed-in user keeps profiles of their
@@ -78,12 +83,11 @@ SDKs, no advertising data.
 
 ## 6. Screenshots & description
 
-- Screenshot sizes: 6.9" (1320×2868) required; 6.5" (1284×2778) reused if
-  omitted. Suggested five: roster, party-mode deck, suitor card sheet, web
-  profile in Safari, chats tab.
-- Description: lead with the one-liner ("Your single friends deserve better
-  PR"), then the party flow, then safety (consent-gated profiles, STOP,
-  wingperson can never read chats).
+✅ Description pushed via metadata. Five 6.9" screenshots (1320×2868, captured
+from the real Release build on an iPhone 17 Pro Max simulator, demo-account
+data) are in `app/store-assets/` — drag them into ASC → App Store tab → iPhone
+6.9" Display (EAS Metadata can't upload screenshots). Order: roster, party
+deck, suitor card, chats, settings.
 
 ## 7. Compliance already handled in the binary
 

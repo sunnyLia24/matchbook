@@ -1,0 +1,65 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0.0",
+    "copyright": "2026 Lia Choi",
+    "release": {
+      "automaticRelease": true
+    },
+    "info": {
+      "en-US": {
+        "description": "Your single friends deserve better PR.\n\nMatchbook is the wingperson app. Build beautiful profiles of your single friends, show them off at parties, and make introductions people actually trust — because they come from you, not an algorithm.\n\nHOW IT WORKS\n\n1. Build your roster. Add your single friends: photos, their pitch, fun prompts, what they're looking for. Every profile goes live only after your friend says they're okay being on it.\n\n2. Work the party. Party mode turns your roster into a full-screen card deck made for passing your phone around the room.\n\n3. Make the intro. Met someone great? Share your friend's private link. They see the profile in their browser and can say hi instantly — no account, no app, no pressure.\n\n4. Forward the chat. When someone says hi, you get a ping. Attach a quick vouch card (who they are, why you're introducing them) and forward the chat link to your friend. The two of them take it from there.\n\nSAFETY FIRST\n\n• Profiles are consent-gated: nothing is shareable until your friend knows they're on your roster.\n• Every profile lives behind an unguessable private link — never listed, never searchable.\n• Either chat participant can type STOP (or tap End chat) to permanently end a conversation. No reopening, ever.\n• You make the intro, but chats are private — the wingperson can never read messages.\n• Report and removal actions on every public page, handled within 24 hours.\n\nMatchbook is for adults (18+). Singles and party guests never need an account — only wingpeople sign up.\n\nYour friends are a catch. Go tell people.",
+        "keywords": [
+          "dating",
+          "matchmaker",
+          "wingman",
+          "friends",
+          "single",
+          "introductions",
+          "matchmaking",
+          "party",
+          "social",
+          "chat"
+        ],
+        "marketingUrl": "https://matchbook-party.netlify.app",
+        "supportUrl": "https://matchbook-party.netlify.app/support",
+        "title": "Matchbook: Wingperson",
+        "subtitle": "Your friends' wingperson",
+        "privacyPolicyUrl": "https://matchbook-party.netlify.app/privacy"
+      }
+    },
+    "categories": [
+      "SOCIAL_NETWORKING",
+      "LIFESTYLE"
+    ],
+    "advisory": {
+      "ageRatingOverride": "NONE",
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gambling": false,
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "kidsAgeBand": null,
+      "koreaAgeRatingOverride": "NONE",
+      "lootBox": false,
+      "matureOrSuggestiveThemes": "INFREQUENT_OR_MILD",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "unrestrictedWebAccess": false,
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "advertising": false,
+      "ageAssurance": false,
+      "ageRatingOverrideV2": "NONE",
+      "developerAgeRatingInfoUrl": null,
+      "gunsOrOtherWeapons": "NONE",
+      "healthOrWellnessTopics": false,
+      "messagingAndChat": true,
+      "parentalControls": false,
+      "userGeneratedContent": true
+    }
+  }
+}
