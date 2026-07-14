@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, FlatList, Image, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { supabase } from '../src/lib/supabase';
@@ -48,7 +49,8 @@ function DeckCard({ friend }: { friend: Friend }) {
     <View style={s.card}>
       {/* Full-bleed hero: photo edge-to-edge, name overlaid on a scrim (matches web /p/).
           2+ photos: stories-style tap zones (right = next, left = back) + segment bars —
-          taps, not swipes, so the outer FlatList keeps horizontal paging between friends. */}
+          taps, not swipes, so the outer FlatList keeps horizontal paging between friends.
+          Hero must be expo-image: RN core Image doesn't redraw an in-place uri swap on Fabric. */}
       <View style={s.hero}>
         {photos[photoIndex]
           ? <Image source={{ uri: photos[photoIndex] }} style={s.photo} />
