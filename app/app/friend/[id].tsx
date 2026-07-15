@@ -13,6 +13,7 @@ const PROMPT_LIBRARY = [
   'Their toxic trait (endearing)', 'Best meal they cook', 'Karaoke go-to',
   'Weirdly good at', 'Perfect first date', 'Hill they’ll die on',
   'Most likely to cry at', 'Their villain origin story', 'Their love language',
+  'Their MBTI', 'School', 'Religion', 'Deal breakers',
 ];
 const MAX_PROMPTS = 3;
 
