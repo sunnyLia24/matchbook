@@ -143,7 +143,7 @@ export default function FriendEditor() {
           </View>
         </View>
       )}
-      <TextInput style={s.input} placeholder="Looking for…" placeholderTextColor={colors.muted} keyboardAppearance="dark" value={f.looking_for ?? ''}
+      <TextInput style={[s.input, s.multi]} multiline placeholder="Looking for…" placeholderTextColor={colors.muted} keyboardAppearance="dark" value={f.looking_for ?? ''}
         onChangeText={(t) => set({ looking_for: t })} />
       <View style={s.rowBetween}>
         <Text style={s.label}>They know they’re on here</Text>
