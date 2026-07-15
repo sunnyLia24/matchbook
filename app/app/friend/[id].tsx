@@ -73,7 +73,8 @@ export default function FriendEditor() {
       await supabase.from('friends').delete().eq('id', id); router.back(); } }]);
 
   return (
-    <ScrollView style={s.wrap} contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 60 }}>
+    <ScrollView style={s.wrap} contentContainerStyle={{ padding: 16, gap: 12, paddingBottom: 60 }}
+      automaticallyAdjustKeyboardInsets>
       <ScrollView horizontal style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 8 }}>
         {(f.photos ?? []).map((url) => (
           <Pressable key={url} onLongPress={() => set({ photos: f.photos!.filter((u) => u !== url) })}>
