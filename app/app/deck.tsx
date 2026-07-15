@@ -88,6 +88,13 @@ function DeckCard({ friend }: { friend: Friend }) {
             <Text style={s.pitch}>{friend.pitch}</Text>
           </View>
         )}
+        {(friend.interests ?? []).length > 0 && (
+          <View style={s.chips}>
+            {friend.interests.map((tag) => (
+              <View key={tag} style={s.chip}><Text style={s.chipText}>{tag}</Text></View>
+            ))}
+          </View>
+        )}
         {(friend.prompts ?? []).slice(0, 2).map((p) => (
           <View key={p.q} style={s.prompt}>
             <Text style={s.q}>{p.q.toUpperCase()}</Text><Text style={s.a}>{p.a}</Text>
@@ -122,6 +129,10 @@ const s = StyleSheet.create({
   pitchWrap: { flexDirection: 'row' },
   quoteMark: { color: colors.champagne, fontSize: 34, fontWeight: '800', lineHeight: 34, marginRight: 4 },
   pitch: { flex: 1, color: colors.nightInk, fontSize: 18, fontWeight: '500', marginTop: 6, lineHeight: 25 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 12 },
+  chip: { backgroundColor: colors.nightElevated, borderWidth: 1, borderColor: colors.line,
+          borderRadius: radii.pill, paddingVertical: 6, paddingHorizontal: 13 },
+  chipText: { color: colors.nightInk, fontSize: 13, fontWeight: '500' },
   prompt: { backgroundColor: colors.nightElevated, borderRadius: radii.sm, padding: 12, marginTop: 10 },
   q: { color: colors.nightMuted, fontSize: 11, letterSpacing: 1 },
   a: { color: colors.nightInk, fontSize: 16, marginTop: 3 },
