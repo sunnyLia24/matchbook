@@ -41,7 +41,8 @@ Same stack as Dear Date:
 All ids are UUIDs. All secret slugs/tokens are cryptographically random and unguessable
 (≥128 bits, base64url).
 
-- **wingpeople** — extends `auth.users`: `id`, `display_name`, `expo_push_token`,
+- **wingpeople** — extends `auth.users`: `id`, `display_name` (collected at
+  sign-up; shown to the friend on the chat intro screen), `expo_push_token`,
   `created_at`.
 - **friends** — roster entries: `id`, `owner_id → wingpeople`, `first_name`, `age`,
   `city`, `pitch` (wingperson's one-liner), `prompts` (jsonb array of {question, answer},
@@ -85,7 +86,14 @@ All ids are UUIDs. All secret slugs/tokens are cryptographically random and ungu
    notification to the wingperson: "Someone wants to talk to <name>!"
 5. In the app, the wingperson sees the new chat with a **Forward to <name>** button
    → share sheet with the friend's chat URL (`/c/<friend_token>`) to text/DM them.
-6. Friend opens their link; both are in the room; realtime chat begins.
+6. Friend opens their link and first sees an **intro screen** framing this as a
+   vouched recommendation, naming the wingperson: "<Wingperson name> vouches for
+   this — they met someone who'd like to chat with you", with two choices:
+   **Enter chat** (joins the room) or **Not interested** (permanently ends the
+   chat, same mechanics as STOP). Only after entering do they see the room.
+   `get_chat` therefore returns the wingperson's display name, and wingpeople
+   provide their display name at sign-up.
+7. Both are in the room; realtime chat begins.
 
 ### STOP mechanics
 - If either participant sends a message that, after trimming whitespace,

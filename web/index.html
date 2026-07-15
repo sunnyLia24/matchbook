@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17101A">
+<meta name="description" content="Matchbook — the wingperson app. Keep profiles of your single friends, show them at parties, and make vouched introductions with account-free chat.">
+<title>Matchbook — your single friends deserve better PR</title>
+<style>
+  :root {
+    --bg: #17101A;
+    --surface: #221727;
+    --elevated: #2E1E33;
+    --ink: #F4EDF6;
+    --muted: #A891B5;
+    --line: #3A2941;
+    --brand: #FF2E63;
+    --brand-press: #D91E4F;
+    --on-brand: #23060F;
+    --champagne: #E3C08D;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+    background:
+      radial-gradient(90% 50% at 50% 0%, rgba(255, 46, 99, 0.16), transparent 65%),
+      var(--bg);
+    color: var(--ink);
+    min-height: 100dvh;
+  }
+  .page { max-width: 430px; margin: 0 auto; padding: 56px 24px 64px; }
+  .mark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--champagne);
+  }
+  h1 {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+    margin-top: 14px;
+  }
+  h1 span { color: var(--brand); }
+  .lede {
+    color: var(--muted);
+    margin-top: 14px;
+    font-size: 17px;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+  .cta {
+    display: block;
+    margin-top: 28px;
+    background: var(--brand);
+    color: var(--on-brand);
+    text-decoration: none;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 16px;
+    border-radius: 999px;
+    box-shadow: 0 8px 28px rgba(255, 46, 99, 0.35);
+    transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
+  }
+  .cta:active { transform: scale(0.98); background: var(--brand-press); }
+  .cta small { display: block; font-size: 12px; font-weight: 500; opacity: 0.75; margin-top: 2px; }
+  .how { margin-top: 48px; display: flex; flex-direction: column; gap: 12px; }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 18px;
+  }
+  .step .n {
+    display: inline-block;
+    background: var(--elevated);
+    border: 1px solid var(--line);
+    color: var(--champagne);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+  }
+  .step h2 {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-top: 10px;
+  }
+  .step p { color: var(--muted); font-size: 15px; line-height: 1.5; margin-top: 6px; }
+  .safety {
+    margin-top: 32px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.55;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .safety b { color: var(--ink); font-weight: 600; }
+  footer { margin-top: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  .legal { margin-top: 14px; display: flex; justify-content: center; gap: 20px; }
+  .legal a {
+    color: var(--muted);
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .fade { opacity: 0; animation: fade-up 420ms var(--ease-out-quart) both; }
+  .d1 { animation-delay: 40ms; } .d2 { animation-delay: 80ms; }
+  .d3 { animation-delay: 120ms; } .d4 { animation-delay: 160ms; }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fade { animation: fade-in 1ms linear both; }
+    .cta { transition: none; }
+    .cta:active { transform: none; }
+  }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="mark fade">Matchbook</div>
+  <h1 class="fade d1">Your single friends deserve better <span>PR</span>.</h1>
+  <p class="lede fade d2">Matchbook is the wingperson app. Build profiles of your single friends, show them off at parties, and make introductions people actually trust — because they come from you.</p>
+  <a class="cta fade d3" href="https://apps.apple.com/app/matchbook" id="store">
+    Get Matchbook for iPhone
+    <small>Free on the App Store</small>
+  </a>
+
+  <div class="how">
+    <div class="step fade d3">
+      <span class="n">01</span>
+      <h2>Build your roster</h2>
+      <p>Add your single friends — photos, their pitch, fun prompts, the works. They consent before anything goes live.</p>
+    </div>
+    <div class="step fade d3">
+      <span class="n">02</span>
+      <h2>Work the party</h2>
+      <p>Party mode turns your roster into a full-screen deck made for passing your phone around the room.</p>
+    </div>
+    <div class="step fade d4">
+      <span class="n">03</span>
+      <h2>Make the intro</h2>
+      <p>Met someone great? Share your friend's link. They chat instantly — no accounts, no apps, no pressure.</p>
+    </div>
+  </div>
+
+  <p class="safety fade d4">Every chat is private and consent-first. <b>Either person can type STOP</b> to permanently end it, anytime.</p>
+
+  <footer class="fade d4">
+    Profiles are shared by invitation only — ask your wingperson for the link.
+    <nav class="legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/support">Support</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>

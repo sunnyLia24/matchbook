@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#17101A">
+<title>Matchbook</title>
+<style>
+  :root {
+    --bg: #17101A;
+    --surface: #221727;
+    --elevated: #2E1E33;
+    --ink: #F4EDF6;
+    --muted: #A891B5;
+    --line: #3A2941;
+    --brand: #FF2E63;
+    --brand-press: #D91E4F;
+    --on-brand: #23060F;
+    --champagne: #E3C08D;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100dvh;
+  }
+  .card {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    animation: rise-in 380ms var(--ease-out-quart) both;
+  }
+  /* Full-bleed photo carousel with the name overlaid — photos are the hero */
+  .hero { position: relative; }
+  .photos {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .photos::-webkit-scrollbar { display: none; }
+  .photos img {
+    width: 100%;
+    flex: none;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    scroll-snap-align: center;
+    background: var(--elevated);
+  }
+  .scrim {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top, var(--bg) 8%, rgba(23, 16, 26, 0.55) 55%, transparent);
+    pointer-events: none;
+  }
+  .id {
+    position: absolute;
+    left: 20px; right: 20px; bottom: 14px;
+    pointer-events: none;
+  }
+  h1 {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  h1 small {
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 24px;
+    letter-spacing: normal;
+  }
+  .city { color: var(--muted); margin-top: 2px; font-size: 15px; font-weight: 500; }
+  .body { padding: 18px 20px 0; }
+  .pitch {
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: 70ch;
+  }
+  .pitch::before {
+    content: '\201C';
+    color: var(--brand);
+    font-size: 1.4em;
+    font-weight: 800;
+    margin-right: 1px;
+  }
+  .pitch::after {
+    content: '\201D';
+    color: var(--muted);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chips span {
+    background: var(--elevated);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 13px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .vouchedby {
+    display: inline-block;
+    margin-top: 12px;
+    background: var(--elevated);
+    border: 1px solid var(--line);
+    color: var(--champagne);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .prompt {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+  .prompt .q {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .prompt .a { margin-top: 4px; font-size: 17px; line-height: 1.45; }
+  .report {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  .cta {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: calc(100% - 40px);
+    max-width: 390px;
+    z-index: 5;
+  }
+  button {
+    width: 100%;
+    min-height: 54px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    border: 0;
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--on-brand);
+    box-shadow: 0 8px 28px rgba(255, 46, 99, 0.35);
+    transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
+  }
+  button:active:not(:disabled) { transform: scale(0.98); background: var(--brand-press); }
+  button:disabled { opacity: 0.55; }
+  .state {
+    text-align: center;
+    padding: 34dvh 30px 0;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.45;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+  .hidden { display: none; }
+
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: fade-in 1ms linear both; }
+    button { transition: none; }
+    button:active:not(:disabled) { transform: none; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="card hidden" id="card">
+  <div class="hero">
+    <div class="photos" id="photos"></div>
+    <div class="scrim"></div>
+    <div class="id">
+      <h1><span id="name"></span> <small id="age"></small></h1>
+      <div class="city" id="city"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="pitch" id="pitch"></div>
+    <div class="vouchedby">vouched by their wingperson ✦</div>
+    <div class="chips" id="interests"></div>
+    <div id="prompts"></div>
+    <button class="report" id="report">Something wrong? Report this profile</button>
+  </div>
+</div>
+<!-- Outside .card: its entrance animation leaves a transform, which would turn
+     position:fixed into position-relative-to-card. -->
+<div class="cta hidden" id="cta"><button id="sayhi">Say hi 👋</button></div>
+<div class="state hidden" id="state"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script>
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const $ = (id) => document.getElementById(id);
+  const slug = location.pathname.split('/')[2] || '';
+  const showState = (msg) => { $('state').textContent = msg; $('state').classList.remove('hidden'); };
+
+  async function load() {
+    const { data: p, error } = await sb.rpc('get_profile', { p_slug: slug });
+    if (error) return showState('Something went wrong — try again in a minute.');
+    if (!p) return showState("This link isn't active.");
+    document.title = p.first_name + ' · Matchbook';
+    for (const url of (p.photos || [])) {
+      const img = document.createElement('img'); img.src = url; $('photos').appendChild(img);
+    }
+    $('name').textContent = p.first_name;
+    $('age').textContent = p.age ? p.age : '';
+    $('city').textContent = [p.city, p.job, p.height].filter(Boolean).join(' · ');
+    $('pitch').textContent = p.pitch || '';
+    for (const tag of (p.interests || [])) {
+      const c = document.createElement('span'); c.textContent = tag; $('interests').appendChild(c);
+    }
+    for (const pr of (p.prompts || [])) {
+      const d = document.createElement('div'); d.className = 'prompt';
+      const q = document.createElement('div'); q.className = 'q'; q.textContent = pr.q;
+      const a = document.createElement('div'); a.className = 'a'; a.textContent = pr.a;
+      d.append(q, a); $('prompts').appendChild(d);
+    }
+    $('card').classList.remove('hidden');
+    $('cta').classList.remove('hidden');
+  }
+
+  $('report').addEventListener('click', async () => {
+    const reason = (window.prompt('Tell us what’s wrong with this profile:') || '').trim();
+    if (!reason) return;
+    const { error } = await sb.rpc('report_profile', { p_slug: slug, p_reason: reason.slice(0, 500) });
+    alert(error ? 'That didn’t go through — try again in a minute.'
+                : 'Thank you. We review every report within 24 hours.');
+  });
+
+  $('sayhi').addEventListener('click', async () => {
+    $('sayhi').disabled = true; $('sayhi').textContent = 'Opening chat…';
+    const { data, error } = await sb.rpc('create_chat', { p_slug: slug });
+    if (error || !data) { $('sayhi').disabled = false; $('sayhi').textContent = 'Say hi 👋'; return; }
+    location.href = '/c/' + data.guest_token;
+  });
+
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+// Matchbook web config — anon key is public by design.
+const SUPABASE_URL = 'https://gyhqbnyuufntgdmowrbi.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5aHFibnl1dWZudGdkbW93cmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDY5NzgsImV4cCI6MjA5ODkyMjk3OH0.GUIQwrx6Lr_lqIv15bB0ROqsrVbOD6y-ongE5I2coK0';

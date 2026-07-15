@@ -1,0 +1,6 @@
+{
+  "name": "matchbook-backend-tests",
+  "private": true,
+  "type": "module",
+  "dependencies": { "@supabase/supabase-js": "^2.104.0" }
+}

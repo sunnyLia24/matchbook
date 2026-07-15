@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#17101A">
+<title>Matchbook chat</title>
+<style>
+  :root {
+    --bg: #17101A;
+    --surface: #221727;
+    --elevated: #2E1E33;
+    --ink: #F4EDF6;
+    --muted: #A891B5;
+    --line: #3A2941;
+    --brand: #FF2E63;
+    --brand-press: #D91E4F;
+    --on-brand: #23060F;
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, 'SF Pro', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  header b { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+  header button {
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px 6px;
+    min-height: 44px;
+  }
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .msg {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.35;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    align-self: flex-start;
+    overflow-wrap: break-word;
+    animation: rise-in 260ms var(--ease-out-quart) both;
+  }
+  .msg.me {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--on-brand);
+    align-self: flex-end;
+    font-weight: 500;
+  }
+  .sys { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 20px; }
+  form {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+  }
+  input {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+    min-height: 44px;
+  }
+  input::placeholder { color: var(--muted); }
+  input:focus { border-color: var(--brand); }
+  form button {
+    border: 0;
+    border-radius: 22px;
+    padding: 0 20px;
+    min-height: 44px;
+    font-size: 16px;
+    font-weight: 700;
+    background: var(--brand);
+    color: var(--on-brand);
+    transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
+  }
+  form button:active { transform: scale(0.97); background: var(--brand-press); }
+  .hint {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 0 12px 8px;
+    background: var(--bg);
+  }
+  .state {
+    text-align: center;
+    padding: 34dvh 30px 0;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.45;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  /* Invite / vouch gate — a dark room with a brand glow */
+  .invite {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(80% 55% at 50% 28%, rgba(255, 46, 99, 0.22), transparent 70%),
+      var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    z-index: 10;
+  }
+  .inviteCard { text-align: center; max-width: 340px; }
+  .inviteCard .emoji {
+    font-size: 44px;
+    opacity: 0;
+    animation: fade-up 320ms var(--ease-out-quart) 0ms both;
+  }
+  .inviteCard h2 {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+    margin-top: 16px;
+    color: var(--ink);
+    opacity: 0;
+    animation: fade-up 320ms var(--ease-out-quart) 40ms both;
+  }
+  .inviteCard p {
+    color: var(--muted);
+    margin-top: 14px;
+    line-height: 1.5;
+    font-size: 15px;
+    opacity: 0;
+    animation: fade-up 320ms var(--ease-out-quart) 80ms both;
+  }
+  .inviteCard button {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 24px;
+    padding: 15px;
+    font-size: 17px;
+    font-weight: 700;
+    border: 0;
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--on-brand);
+    box-shadow: 0 8px 28px rgba(255, 46, 99, 0.35);
+    opacity: 0;
+    animation: fade-up 320ms var(--ease-out-quart) 120ms both;
+    transition: transform 150ms var(--ease-out-quart), background 150ms var(--ease-out-quart);
+  }
+  .inviteCard button:active { transform: scale(0.98); background: var(--brand-press); }
+  .inviteCard button.ghost {
+    background: none;
+    color: var(--muted);
+    font-weight: 500;
+    margin-top: 10px;
+    min-height: 44px;
+    box-shadow: none;
+    animation: fade-up 320ms var(--ease-out-quart) 160ms both;
+  }
+  #sCard { display: contents; }
+  .sPhoto {
+    width: 148px; height: 185px; object-fit: cover; border-radius: 18px;
+    margin: 0 auto; display: block;
+    box-shadow: 0 10px 34px rgba(255, 46, 99, 0.3);
+    opacity: 0; animation: fade-up 320ms var(--ease-out-quart) 0ms both;
+  }
+  .sTags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin-top: 14px; opacity: 0; animation: fade-up 320ms var(--ease-out-quart) 60ms both; }
+  .sTag { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+    font-size: 13px; font-weight: 600; color: var(--ink); }
+  .sIg { display: inline-block; margin-top: 12px; color: var(--brand);
+    font-weight: 700; font-size: 15px; text-decoration: none;
+    opacity: 0; animation: fade-up 320ms var(--ease-out-quart) 90ms both; }
+  .ghostBtn { background: none; border: 0; color: var(--muted); font-size: 13px;
+    font-weight: 600; min-height: 44px; padding: 0 10px; }
+  .hidden { display: none; }
+
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .msg { animation: fade-in 1ms linear both; }
+    .inviteCard .emoji,
+    .inviteCard h2,
+    .inviteCard p,
+    .inviteCard button,
+    .inviteCard .sPhoto,
+    .inviteCard .sTags,
+    .inviteCard .sIg { animation: fade-in 1ms linear both; }
+    form button:active, .inviteCard button:active { transform: none; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="invite hidden" id="invite">
+  <div class="inviteCard">
+    <div class="emoji">💌</div>
+    <div id="sCard"></div>
+    <h2 id="inviteTitle"></h2>
+    <p>They met someone who'd like to chat with you. No accounts, no pressure — send "STOP" anytime and the chat ends for good.</p>
+    <button id="enter">Enter chat</button>
+    <button id="decline" class="ghost">Not interested</button>
+  </div>
+</div>
+<header class="hidden" id="hdr"><b id="title"></b><button id="about" class="hidden ghostBtn"></button><button id="report" class="ghostBtn">Report</button><button id="end">End chat</button></header>
+<div id="log" class="hidden"></div>
+<form id="composer" class="hidden" autocomplete="off">
+  <input id="box" placeholder="Message…" maxlength="2000">
+  <button>Send</button>
+</form>
+<div class="hint hidden" id="hint">Sending "STOP" by itself permanently ends this chat.</div>
+<div class="state hidden" id="state"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script>
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const $ = (id) => document.getElementById(id);
+  const token = location.pathname.split('/')[2] || '';
+  let role = null, channel = null;
+
+  const showState = (msg) => {
+    for (const id of ['hdr','log','composer','hint']) $(id).classList.add('hidden');
+    $('state').textContent = msg; $('state').classList.remove('hidden');
+  };
+  const addMsg = (m) => {
+    const d = document.createElement('div');
+    d.className = 'msg' + (m.sender === role ? ' me' : '');
+    d.textContent = m.body;
+    $('log').appendChild(d); $('log').scrollTop = $('log').scrollHeight;
+  };
+  const showEnded = () => {
+    $('composer').classList.add('hidden'); $('hint').classList.add('hidden');
+    $('end').classList.add('hidden'); $('about').classList.add('hidden');
+    const d = document.createElement('div'); d.className = 'sys';
+    d.textContent = 'This chat has ended.';
+    $('log').appendChild(d); $('log').scrollTop = $('log').scrollHeight;
+    if (channel) sb.removeChannel(channel);
+  };
+
+  const IG_OK = (h) => typeof h === 'string' && /^[A-Za-z0-9._]{1,30}$/.test(h);
+  function renderCard(card) {
+    const wrap = $('sCard'); wrap.replaceChildren();
+    if (!card || typeof card !== 'object') return false;
+    let any = false;
+    if (typeof card.photo === 'string') {
+      const img = document.createElement('img');
+      img.className = 'sPhoto'; img.alt = '';
+      img.onerror = () => img.remove();
+      img.src = card.photo;
+      wrap.appendChild(img); any = true;
+    }
+    const tags = Array.isArray(card.tags) ? card.tags.filter((t) => typeof t === 'string') : [];
+    if (tags.length) {
+      const row = document.createElement('div'); row.className = 'sTags';
+      for (const t of tags) {
+        const c = document.createElement('span'); c.className = 'sTag';
+        c.textContent = t; row.appendChild(c);
+      }
+      wrap.appendChild(row); any = true;
+    }
+    if (IG_OK(card.ig)) {
+      const a = document.createElement('a'); a.className = 'sIg';
+      a.href = 'https://instagram.com/' + encodeURIComponent(card.ig);
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.textContent = '@' + card.ig;
+      wrap.appendChild(a); any = true;
+    }
+    return any || typeof card.name === 'string';
+  }
+
+  async function load(first) {
+    const { data: c, error } = await sb.rpc('get_chat', { p_token: token });
+    if (error) return first && showState('Something went wrong — try again in a minute.');
+    if (!c) return showState("This link isn't active.");
+    role = c.role;
+    $('title').textContent = c.role === 'guest' ? 'Chat with ' + c.friend_name : 'Your Matchbook chat';
+    $('log').replaceChildren();
+    c.messages.forEach(addMsg);
+    if (c.status === 'ended') { $('invite').classList.add('hidden'); for (const id of ['hdr','log']) $(id).classList.remove('hidden'); return showEnded(); }
+    for (const id of ['hdr','log','composer','hint']) $(id).classList.remove('hidden');
+    // friend-side intro gate: this is a vouched recommendation, entering is a choice
+    const entered = sessionStorage.getItem('entered:' + token);
+    const suitorName = typeof c.suitor_card?.name === 'string' ? c.suitor_card.name : null;
+    const gateTitle = (c.wingperson_name || 'Your friend')
+      + ' vouches for ' + (suitorName || 'this');
+    const hasCard = c.role === 'friend' && renderCard(c.suitor_card);
+    if (c.role === 'friend' && !entered && !c.messages.some((m) => m.sender === 'friend')) {
+      $('inviteTitle').textContent = gateTitle;
+      $('decline').classList.remove('hidden');
+      $('enter').textContent = 'Enter chat';
+      $('invite').classList.remove('hidden');
+    }
+    if (hasCard) {
+      $('about').textContent = 'about ' + (suitorName || 'them');
+      $('about').classList.remove('hidden');
+      $('about').onclick = () => {
+        $('inviteTitle').textContent = gateTitle;
+        $('decline').classList.add('hidden');
+        $('enter').textContent = 'Back to chat';
+        $('invite').classList.remove('hidden');
+      };
+    }
+    if (first) {
+      channel = sb.channel('chat:' + c.broadcast_key)
+        .on('broadcast', { event: 'message' }, ({ payload }) => { if (payload.sender !== role) addMsg(payload); })
+        .on('broadcast', { event: 'ended' }, showEnded)
+        .subscribe();
+    }
+  }
+
+  $('composer').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = $('box').value.trim();
+    if (!body) return;
+    $('box').value = '';
+    const { data: r } = await sb.rpc('send_message', { p_token: token, p_body: body });
+    if (!r?.ok) { if (r?.error === 'ended') showEnded(); return; }
+    // own messages render locally; server broadcasts echo to everyone, so the handler skips own-sender payloads
+    if (!r.ended) addMsg({ sender: role, body });
+  });
+
+  // stays available after a chat ends — the transcript is still visible
+  $('report').addEventListener('click', async () => {
+    const reason = (window.prompt('Tell us what’s wrong in this chat:') || '').trim();
+    if (!reason) return;
+    const { error } = await sb.rpc('report_chat', { p_token: token, p_reason: reason.slice(0, 500) });
+    alert(error ? 'That didn’t go through — try again in a minute.'
+                : 'Thank you. We review every report within 24 hours.');
+  });
+
+  $('end').addEventListener('click', async () => {
+    if (!confirm('Permanently end this chat? This can’t be undone.')) return;
+    await sb.rpc('end_chat', { p_token: token });
+    showEnded();
+  });
+
+  $('enter').addEventListener('click', () => {
+    sessionStorage.setItem('entered:' + token, '1');
+    $('invite').classList.add('hidden');
+  });
+
+  $('decline').addEventListener('click', async () => {
+    if (!confirm('Pass on this one? The chat ends permanently for both of you.')) return;
+    await sb.rpc('end_chat', { p_token: token });
+    $('invite').classList.add('hidden');
+    for (const id of ['hdr','log']) $(id).classList.remove('hidden');
+    showEnded();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && role) load(false);
+  });
+
+  load(true);
+</script>
+</body>
+</html>

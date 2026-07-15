@@ -12,7 +12,7 @@
 
 - Spec: `docs/superpowers/specs/2026-07-05-matchbook-v1-design.md` — read it before starting any task.
 - All secret slugs/tokens: ≥128 bits, base64url, generated server-side by `matchbook_token()` (Task 3).
-- STOP normalization is exactly: `upper(btrim(body)) = 'STOP'`; the STOP message is never stored or delivered; ended chats permanently reject sends — enforced in SQL, never only in UI.
+- STOP normalization is exactly: `upper(btrim(body, E' \\t\\r\\n')) = 'STOP'` (all whitespace); the STOP message is never stored or delivered; ended chats permanently reject sends — enforced in SQL, never only in UI.
 - Anonymous web visitors NEVER select tables directly; only `get_profile`, `create_chat`, `get_chat`, `send_message`, `end_chat` RPCs.
 - Wingpeople can never read `messages` (no grants). The app fetches only chat metadata columns.
 - Message bodies: non-empty after trim, ≤ 2000 chars, always rendered as text (`textContent`, never `innerHTML`).
@@ -20,7 +20,8 @@
 - Setting a friend's status to anything but `single` ends all their active chats (DB trigger).
 - Monorepo layout: `backend/` (migrations, tests), `web/` (Netlify site), `app/` (Expo). Commit after every task.
 - The Supabase anon key is public by design (same as Dear Date); the service role key must never appear in any file in this repo.
-- Node test scripts are the backend test suite: run with `node backend/tests/<file>.mjs`; they exit 0 on pass, non-zero with an assertion error on fail.
+- The app scaffolded on Expo SDK 57 (accepted deviation from the original SDK 54 target; same architecture). Tasks 11–14: before using an SDK-sensitive API from this plan's code (expo-file-system `legacy` import, expo-image-picker `mediaTypes`, expo-notifications tokens), verify it exists in the installed SDK and adapt minimally if the API moved — the behavior contract in each task is what's binding, not the exact import path.
+- Node test scripts are the backend test suite: run with `node --experimental-websocket backend/tests/<file>.mjs` (local Node is 20.x, whose supabase-js needs the WebSocket flag); they exit 0 on pass, non-zero with an assertion error on fail.
 
 ---
 
@@ -125,7 +126,7 @@ const rand = () => Math.random().toString(36).slice(2, 10);
 
 async function signUp() {
   const c = anon();
-  const email = `test-${rand()}@matchbook-test.dev`;
+  const email = `test-${rand()}@matchbook-test.com`;
   const { data, error } = await c.auth.signUp({ email, password: 'test-pass-123!' });
   assert(!error, `signup failed: ${error?.message}`);
   assert(data.session, 'no session — is Confirm email disabled?');
@@ -304,7 +305,7 @@ const anon = () => createClient(cfg.url, cfg.anonKey, { auth: { persistSession: 
 const rand = () => Math.random().toString(36).slice(2, 10);
 
 const owner = anon();
-await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.dev`, password: 'test-pass-123!' });
+await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.com`, password: 'test-pass-123!' });
 const mk = async (over = {}) => (await owner.from('friends').insert({
   first_name: 'Jenny', age: 29, pitch: 'Great taste in people', consented: true,
   prompts: [{ q: 'Ideal Sunday', a: 'Dim sum then a long walk' }], ...over,
@@ -401,7 +402,7 @@ git add backend && git commit -m "feat: get_profile and create_chat RPCs"
 **Interfaces:**
 - Consumes: `chats`, `messages`, `matchbook_token()` from Tasks 2–3.
 - Produces (RPCs, anon-callable):
-  - `get_chat(p_token text) returns jsonb` → `{status, ended_by, role: 'guest'|'friend', friend_name, broadcast_key, messages: [{sender, body, created_at}]}` or NULL for a bad token.
+  - `get_chat(p_token text) returns jsonb` → `{status, ended_by, role: 'guest'|'friend', friend_name, wingperson_name, broadcast_key, messages: [{sender, body, created_at}]}` or NULL for a bad token. `wingperson_name` is the friend's owner's `wingpeople.display_name` — the chat page's friend-side intro screen names them.
   - `send_message(p_token text, p_body text) returns jsonb` → `{"ok":true,"ended":false}` normal send (also broadcasts event `message` payload `{sender, body, created_at}` on Realtime topic `chat:<broadcast_key>`); `{"ok":true,"ended":true}` when body normalizes to STOP (broadcasts event `ended`, stores nothing); `{"ok":false,"error":"ended"|"invalid"|"not_found"}` otherwise.
   - `end_chat(p_token text) returns jsonb` → `{"ok":true,"ended":true}` (idempotent).
 - Produces trigger: `friends` status leaving `'single'` → all that friend's active chats become `ended` (`ended_by` null, `ended_at` now()).
@@ -419,7 +420,8 @@ const anon = () => createClient(cfg.url, cfg.anonKey, { auth: { persistSession: 
 const rand = () => Math.random().toString(36).slice(2, 10);
 
 const owner = anon();
-await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.dev`, password: 'test-pass-123!' });
+const ownerEmail = `test-${rand()}@matchbook-test.com`;
+await owner.auth.signUp({ email: ownerEmail, password: 'test-pass-123!' });
 const newChat = async () => {
   const { data: f } = await owner.from('friends')
     .insert({ first_name: 'Jenny', consented: true }).select().single();
@@ -438,6 +440,7 @@ r = (await t.v.rpc('send_message', { p_token: t.friend, p_body: 'hey! who is thi
 assert(r.ok, 'friend send failed');
 let g = (await t.v.rpc('get_chat', { p_token: t.friend })).data;
 assert(g.role === 'friend' && g.friend_name === 'Jenny' && g.broadcast_key.length >= 22, 'get_chat shape wrong');
+assert(g.wingperson_name === ownerEmail.split('@')[0], 'wingperson_name missing/wrong (signup trigger defaults display_name to email prefix)');
 assert(g.messages.length === 2 && g.messages[0].sender === 'guest', 'history wrong');
 assert((await t.v.rpc('get_chat', { p_token: 'bogus' })).data === null, 'bad token must be null');
 
@@ -495,15 +498,18 @@ create or replace function public.get_chat(p_token text) returns jsonb
 language plpgsql security definer set search_path = public stable as $$
 declare v record;
 begin
-  select c.id, c.status, c.ended_by, c.broadcast_key, r.role, f.first_name
+  select c.id, c.status, c.ended_by, c.broadcast_key, r.role, f.first_name,
+         w.display_name
     into v
     from public._chat_for(p_token) r
     join chats c on c.id = r.chat_id
-    join friends f on f.id = c.friend_id;
+    join friends f on f.id = c.friend_id
+    join wingpeople w on w.id = f.owner_id;
   if v is null then return null; end if;
   return jsonb_build_object(
     'status', v.status, 'ended_by', v.ended_by, 'role', v.role,
-    'friend_name', v.first_name, 'broadcast_key', v.broadcast_key,
+    'friend_name', v.first_name, 'wingperson_name', v.display_name,
+    'broadcast_key', v.broadcast_key,
     'messages', coalesce((
       select jsonb_agg(jsonb_build_object('sender', m.sender, 'body', m.body,
                                           'created_at', m.created_at)
@@ -621,7 +627,7 @@ const rand = () => Math.random().toString(36).slice(2, 10);
 const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='), c => c.charCodeAt(0));
 
 const owner = anon();
-const { data: su } = await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.dev`, password: 'test-pass-123!' });
+const { data: su } = await owner.auth.signUp({ email: `test-${rand()}@matchbook-test.com`, password: 'test-pass-123!' });
 const uid = su.user.id;
 
 // owner can upload into own folder
@@ -854,7 +860,7 @@ import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'fs';
 const cfg = JSON.parse(readFileSync(new URL('../config.json', import.meta.url)));
 const c = createClient(cfg.url, cfg.anonKey, { auth: { persistSession: false } });
-await c.auth.signUp({ email: `demo-${Math.random().toString(36).slice(2,8)}@matchbook-test.dev`, password: 'test-pass-123!' });
+await c.auth.signUp({ email: `demo-${Math.random().toString(36).slice(2,8)}@matchbook-test.com`, password: 'test-pass-123!' });
 const { data: f } = await c.from('friends').insert({
   first_name: 'Jenny', age: 29, city: 'Brooklyn', pitch: 'My funniest friend, dangerously good at karaoke',
   prompts: [{ q: 'Ideal Sunday', a: 'Dim sum then a long walk with no destination' }],
@@ -880,6 +886,7 @@ git add web backend/tests/seed-demo.mjs && git commit -m "feat: web profile page
 
 **Interfaces:**
 - Produces: chat room page used by both participants (role from `get_chat`). Live updates via broadcast subscription; refetches history when the tab becomes visible again (poll fallback). "End chat" button = `end_chat` after a `confirm()`. A hint under the composer says a lone "STOP" ends the chat too.
+- Friend-side intro gate: when `role === 'friend'`, the chat is active, and the friend hasn't sent a message yet (and hasn't entered this session — `sessionStorage`), a full-screen intro is shown instead of the room: "💌 <wingperson_name> vouches for this — they met someone who'd like to chat with you", with **Enter chat** (dismisses the gate) and **Not interested** (confirm → `end_chat`). Guests never see the gate.
 
 - [ ] **Step 1: Write the page**
 
@@ -916,10 +923,27 @@ git add web backend/tests/seed-demo.mjs && git commit -m "feat: web profile page
                 background:var(--accent); color:#fff; }
   .hint { text-align:center; font-size:11px; color:#a4937f; padding:0 12px 8px; background:var(--paper); }
   .state { text-align:center; padding:34dvh 30px 0; color:#7a6a5b; font-size:17px; }
+  .invite { position:fixed; inset:0; background:var(--paper); display:flex; align-items:center;
+            justify-content:center; padding:28px; z-index:10; }
+  .inviteCard { text-align:center; max-width:340px; }
+  .inviteCard h2 { font-size:24px; margin-top:12px; }
+  .inviteCard p { color:#7a6a5b; margin-top:12px; line-height:1.5; font-size:15px; }
+  .inviteCard button { width:100%; margin-top:22px; padding:15px; font-size:17px; font-weight:600;
+                       border:0; border-radius:14px; background:var(--accent); color:#fff; }
+  .inviteCard button.ghost { background:none; color:#7a6a5b; font-weight:400; margin-top:6px; }
   .hidden { display:none; }
 </style>
 </head>
 <body>
+<div class="invite hidden" id="invite">
+  <div class="inviteCard">
+    <div style="font-size:44px">💌</div>
+    <h2 id="inviteTitle"></h2>
+    <p>They met someone who'd like to chat with you. No accounts, no pressure — send “STOP” anytime and the chat ends for good.</p>
+    <button id="enter">Enter chat</button>
+    <button id="decline" class="ghost">Not interested</button>
+  </div>
+</div>
 <header class="hidden" id="hdr"><b id="title"></b><button id="end">End chat</button></header>
 <div id="log" class="hidden"></div>
 <form id="composer" class="hidden" autocomplete="off">
@@ -963,8 +987,14 @@ git add web backend/tests/seed-demo.mjs && git commit -m "feat: web profile page
     $('title').textContent = c.role === 'guest' ? 'Chat with ' + c.friend_name : 'Your Matchbook chat';
     $('log').replaceChildren();
     c.messages.forEach(addMsg);
-    if (c.status === 'ended') { for (const id of ['hdr','log']) $(id).classList.remove('hidden'); return showEnded(); }
+    if (c.status === 'ended') { $('invite').classList.add('hidden'); for (const id of ['hdr','log']) $(id).classList.remove('hidden'); return showEnded(); }
     for (const id of ['hdr','log','composer','hint']) $(id).classList.remove('hidden');
+    // friend-side intro gate: this is a vouched recommendation, entering is a choice
+    const entered = sessionStorage.getItem('entered:' + token);
+    if (c.role === 'friend' && !entered && !c.messages.some((m) => m.sender === 'friend')) {
+      $('inviteTitle').textContent = c.wingperson_name + ' vouches for this';
+      $('invite').classList.remove('hidden');
+    }
     if (first) {
       channel = sb.channel('chat:' + c.broadcast_key)
         .on('broadcast', { event: 'message' }, ({ payload }) => addMsg(payload))
@@ -987,6 +1017,19 @@ git add web backend/tests/seed-demo.mjs && git commit -m "feat: web profile page
   $('end').addEventListener('click', async () => {
     if (!confirm('Permanently end this chat? This can’t be undone.')) return;
     await sb.rpc('end_chat', { p_token: token });
+    showEnded();
+  });
+
+  $('enter').addEventListener('click', () => {
+    sessionStorage.setItem('entered:' + token, '1');
+    $('invite').classList.add('hidden');
+  });
+
+  $('decline').addEventListener('click', async () => {
+    if (!confirm('Pass on this one? The chat ends permanently for both of you.')) return;
+    await sb.rpc('end_chat', { p_token: token });
+    $('invite').classList.add('hidden');
+    for (const id of ['hdr','log']) $(id).classList.remove('hidden');
     showEnded();
   });
 
@@ -1053,7 +1096,7 @@ const { data: row } = await c.from('chats').select('friend_token').eq('friend_id
 console.log('guest chat:  /c/' + ch.guest_token);
 console.log('friend chat: /c/' + row.friend_token);
 ```
-5. Open guest link and friend link in two different browsers; send messages both ways — they appear live on the other side without reloading.
+5. Open the friend link — the intro gate appears first ("<wingperson> vouches for this") with Enter chat / Not interested; tap **Enter chat**. Open the guest link in a different browser (no gate there); send messages both ways — they appear live on the other side without reloading. Separately, on a fresh chat, verify **Not interested** on the friend link ends the chat for both sides.
 6. Send `stop` from one side → both sides show "This chat has ended." (the other side within a second, via broadcast); reloading either link shows ended state; STOP itself never appears as a message.
 7. Save this list as `docs/superpowers/manual-test-checklist.md` (write the 6 numbered checks above into the file, plus: profile hidden after `status='taken'`; ended chat rejects sends after reload) — it's the regression checklist for every later change.
 
@@ -1174,16 +1217,21 @@ import { supabase } from '../../src/lib/supabase';
 
 export default function SignIn() {
   const [mode, setMode] = useState<'in' | 'up'>('in');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
 
   const go = async () => {
+    if (mode === 'up' && !name.trim()) return Alert.alert('Hmm', 'Add your name — your friends’ matches see it on chat invites.');
     setBusy(true);
-    const fn = mode === 'in'
-      ? supabase.auth.signInWithPassword({ email: email.trim(), password })
-      : supabase.auth.signUp({ email: email.trim(), password });
-    const { error } = await fn;
+    const { data, error } = mode === 'in'
+      ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      : await supabase.auth.signUp({ email: email.trim(), password });
+    if (!error && mode === 'up' && data.user) {
+      // shown to friends on the chat intro screen: "<name> vouches for this"
+      await supabase.from('wingpeople').update({ display_name: name.trim() }).eq('id', data.user.id);
+    }
     setBusy(false);
     if (error) Alert.alert('Hmm', error.message);
   };
@@ -1192,6 +1240,10 @@ export default function SignIn() {
     <KeyboardAvoidingView style={s.wrap} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <Text style={s.logo}>Matchbook 🔥</Text>
       <Text style={s.tag}>Your single friends deserve better PR.</Text>
+      {mode === 'up' && (
+        <TextInput style={s.input} placeholder="Your name (shown on chat invites)"
+          value={name} onChangeText={setName} />
+      )}
       <TextInput style={s.input} placeholder="Email" autoCapitalize="none" keyboardType="email-address"
         value={email} onChangeText={setEmail} />
       <TextInput style={s.input} placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
